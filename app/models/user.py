@@ -1,7 +1,7 @@
 from app import db
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
 from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, PasswordField
+from wtforms import StringField, EmailField, PasswordField, FloatField, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo
 from datetime import datetime
 
@@ -12,7 +12,7 @@ class User(db.Model):
     name = Column(String(120), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     email_confirmed = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime, default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    created_at = Column(DateTime, default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), nullable=False)
     pwd = Column(String(128), nullable=True)
 
     def __init__(self, name, email, pwd):
@@ -60,7 +60,7 @@ class SignupForm(FlaskForm):
 
 class ProductForm(FlaskForm):
     cod = StringField("Código do Produto:", validators=[DataRequired()])
-    desc = String("Descrição do produto: ", validators=[DataRequired()])
-    preco = String("Preço Produto: ", validators=[DataRequired()])
-    quant = String("Quantidade: ", validators=[DataRequired()])
+    desc = StringField("Descrição do produto: ", validators=[DataRequired()])
+    preco = FloatField("Preço Produto: ", validators=[DataRequired()])
+    quant = IntegerField("Quantidade: ", validators=[DataRequired()])
     
