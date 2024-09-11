@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
 from flask_wtf import FlaskForm
 from wtforms import StringField, EmailField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo
@@ -12,7 +12,7 @@ class User(db.Model):
     name = Column(String(120), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     email_confirmed = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime, default=datetime.now())
+    created_at = Column(DateTime, default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     pwd = Column(String(128), nullable=True)
 
     def __init__(self, name, email, pwd):
@@ -22,6 +22,27 @@ class User(db.Model):
 
     def __repr__(self):
         return f"Name: {self.name}\nEmail: {self.email}\nConfirmed: {self.email_confirmed}\nCreated at : {self.created_at}"
+
+
+class Product(db.Model):
+    __tablename__ = 'products'
+
+    id = Column(Integer, primary_key=True)
+    cod = Column(Integer)
+    desc = Column(String(256), nullable=False)
+    preco = Column(Float(), nullable=False)
+    quant = Column(Integer, default=1, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, cod, desc, preco, quant, user_id):
+        self.cod = cod
+        self.desc = desc 
+        self.preco = preco
+        self.quant = quant
+        self.user_id
+
+    def __repr__(self):
+        return f"Cód: {self.cod}\npreco: {self.preco}\nQuant: {self.quant}\nValor Total desse produto: {self.preco * self.quant}"
 
 
 class LoginForm(FlaskForm):
@@ -35,4 +56,11 @@ class SignupForm(FlaskForm):
     email = EmailField("Email: ", validators=[DataRequired()])
     pwd = PasswordField("Senha:", validators=[DataRequired()])
     check_pwd = PasswordField("Senha:", validators=[DataRequired(), EqualTo(pwd, 'As senhas devem ser iguais!')])
+
+
+class ProductForm(FlaskForm):
+    cod = StringField("Código do Produto:", validators=[DataRequired()])
+    desc = String("Descrição do produto: ", validators=[DataRequired()])
+    preco = String("Preço Produto: ", validators=[DataRequired()])
+    quant = String("Quantidade: ", validators=[DataRequired()])
     
