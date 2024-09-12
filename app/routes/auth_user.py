@@ -4,6 +4,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, flash
 from smtplib import SMTPException
 from flask_login import current_user
 from sqlalchemy.exc import OperationalError
+import sqlalchemy.exc as exc
 import jwt
 from jwt.exceptions import ExpiredSignatureError
 import datetime
@@ -87,6 +88,17 @@ def confirmation(token):
             user.email_confirmed = True
             try:
                 db.session.commit()
+            except OperationalError as e:
+                link = "https://github.com/felipe-fjs"
+                flash(f'Ocorreu algum erro ao confirmar seu email...</br>'
+                      f'Erro: {e}. Consulte o <a href="{link}" target="_blank">desenvolvedor</a> para informar erro')
+            except exc as e:
+                link = "https://github.com/felipe-fjs"
+                flash(f'Ocorreu algum erro ao confirmar seu email...</br>'
+                      f'Erro: {e}. Consulte o <a href="{link}" target="_blank">desenvolvedor</a> para informar erro')
+            else:
+
+                return redirect(url_for('stock.home'))
 
     return f"<h1>{message}</h1>"
 
