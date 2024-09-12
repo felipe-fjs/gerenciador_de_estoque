@@ -1,9 +1,9 @@
 from app import login_manager, bcrypt, db, app, mail
 from app.models.user import User, SignupForm
 from flask import Blueprint, request, render_template, redirect, url_for, flash
-from sqlalchemy.exc import OperationalError
-from flask_mailman import EmailMessage
 from smtplib import SMTPException
+from flask_login import current_user
+from sqlalchemy.exc import OperationalError
 import jwt
 from jwt.exceptions import ExpiredSignatureError
 import datetime
@@ -18,6 +18,9 @@ def get_user(id):
 
 @user_route.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('stock.home'))
+    
     form = SignupForm()
     if request.method == 'POST':
         if not User.query.filter_by(email=request.form['email']).first():
@@ -27,11 +30,12 @@ def signup():
                             pwd)
             try:
                 # realiza a tentativa de cadastrar o usuário
-                print(new_user)
-                # db.session.add(new_user)
-                # db.session.commit()
+                db.session.add(new_user)
+                db.session.commit()
             except OperationalError as e:
-                error = f'ocorreu algum erro no seu cadastro....\n{e}'
+                link = "https://github.com/felipe-fjs"
+                error = f'''ocorreu algum erro no seu cadastro.... {e}.
+                Tente novamente, se o erro persistir entre em contato com o <a href='{link}' target='_blank'>desenvolvedor</a> para corrigir o erro'''
                 flash(error)
             else:
                 flash(f'Usuário "{new_user.name}" cadastrado com sucesso!')
@@ -40,7 +44,7 @@ def signup():
                     token = jwt.encode(
                                         payload={
                                             'email':new_user.email, 
-                                            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=20)
+                                            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=15)
                                             },
                                         key=app.config['SECRET_KEY'],
                                         algorithm='HS256')
@@ -54,14 +58,12 @@ def signup():
                                    auth_password=app.config['MAIL_PASSWORD'])
                     
                 except SMTPException as e:
-                    print(e)
+                    flash(f'Ocorreu algum erro ao enviar o email para confirmação: {e}.'
+                          '</br>Faça login para solicitar um novo link!')
 
                 return redirect(url_for('user.login'))
             finally:
-                # db.session.close()
-                print('TERMINOU')
-
-
+                db.session.close()
 
             return redirect(url_for('user.signup'))
         
@@ -79,12 +81,21 @@ def confirmation(token):
         message = 'Token Expirado!' +  f'ERROR: {e}'
     else:
         message = f'Token NÃO expirado {decode}'
+        
+        if User.query.filter_by(email=decode['email']).first():
+            user = User.query.filter_by(email=decode['email']).first()
+            user.email_confirmed = True
+            try:
+                db.session.commit()
 
     return f"<h1>{message}</h1>"
 
 
 @user_route.route('/login')
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('stock.home'))
+    
     return "<h1> Login page </h1>"
 
 

@@ -1,11 +1,12 @@
 from app import db
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
 from flask_wtf import FlaskForm
+from flask_login import UserMixin
 from wtforms import StringField, EmailField, PasswordField, FloatField, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo
 from datetime import datetime
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)

@@ -6,9 +6,11 @@ from flask_bcrypt import Bcrypt
 from flask_mailman import Mail
 from CONFIG import SECRET_KEY, SQLALCHEMY_URI, EMAIL_USERNAME, EMAIL_PWD
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+ SQLALCHEMY_URI
+
 
 email_config = {
     'MAIL_SERVER': 'smtp.gmail.com',
@@ -32,6 +34,7 @@ with app.app_context():
     
 
 from app.routes.auth_user import user_route
+from app.routes.stock import stock_route
 
-
+app.register_blueprint(stock_route, url_prefix='/estoque')
 app.register_blueprint(user_route, url_prefix='/auth')
