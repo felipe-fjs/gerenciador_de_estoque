@@ -2,7 +2,7 @@ from app import login_manager, bcrypt, db, app, mail
 from app.models.user import User, SignupForm
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from smtplib import SMTPException
-from flask_login import current_user
+from flask_login import current_user, login_user, logout_user
 from sqlalchemy.exc import OperationalError
 import sqlalchemy.exc as exc
 import jwt
@@ -15,6 +15,14 @@ user_route = Blueprint('user', __name__)
 @login_manager.user_loader
 def get_user(id):
     return User.query.filter_by(id=id).first()
+
+
+@app.route('/')
+@app.route('/login')
+def redirect_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('stock.home'))
+    return redirect(url_for('user.login'))
 
 
 @user_route.route('/signup', methods=['GET', 'POST'])
@@ -111,14 +119,33 @@ Faça login novamente para solicitar um nove token de autenticação!"""
                 return redirect(url_for('stock.home'))
 
 
-@user_route.route('/login')
+@user_route.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('stock.home'))
     
-    return "<h1> Login page </h1>"
+    if request.method == 'POST':
+        if not User.query.filter_by(email=request.form['email']).first():
+            flash(f'Email não cadastrado!')
+            return redirect(url_for('user.login'))
+
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user.verify_pwd(request.form['pwd']):
+            login_user(user)
+            return redirect(url_for('stock.home'))
+        
+        flash('Senha incorreta!')
+
+    return render_template('auth/login.html')
+
+
+@user_route.route('/logout')
+def logout():
+    logout_user()
+    flash('Você foi deslogado com sucesso!')
+    return redirect(url_for('user.login'))
 
 
 @user_route.route('/redefinir-senha')
-def forget_pwd():
+def reset_pwd():
     pass

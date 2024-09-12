@@ -36,5 +36,7 @@ with app.app_context():
 from app.routes.auth_user import user_route
 from app.routes.stock import stock_route
 
+login_manager.login_view = 'user.login'
+
 app.register_blueprint(stock_route, url_prefix='/estoque')
 app.register_blueprint(user_route, url_prefix='/auth')

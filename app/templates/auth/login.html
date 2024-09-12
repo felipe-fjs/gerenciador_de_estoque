@@ -11,5 +11,16 @@
         {{ message }}
     {% endfor %}
 {% endif %}
-<h1>Login</h1>
+<form action="{{ url_for('user.login') }}" method="post">
+    <p>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email">
+    </p>
+    <p>
+        <label for="pwd">Senha</label>
+        <input type="password" name="pwd" id="pwd">
+    </p>
+    <button type="submit">Login</button>
+    <a href="{{ url_for('user.reset_pwd') }}">Esqueceu a senha?</a>
+</form>
 {% endblock %}

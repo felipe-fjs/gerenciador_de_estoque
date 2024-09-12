@@ -1,4 +1,4 @@
-from app import db
+from app import db, bcrypt
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
 from flask_wtf import FlaskForm
 from flask_login import UserMixin
@@ -23,6 +23,9 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"Name: {self.name}\nEmail: {self.email}\nConfirmed: {self.email_confirmed}\nCreated at : {self.created_at}"
+
+    def verify_pwd(self, pwd):
+        return bcrypt.check_password_hash(self.pwd, pwd)
 
 
 class Product(db.Model):
