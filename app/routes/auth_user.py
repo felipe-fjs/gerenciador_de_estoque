@@ -6,7 +6,7 @@ from flask_login import current_user
 from sqlalchemy.exc import OperationalError
 import sqlalchemy.exc as exc
 import jwt
-from jwt.exceptions import ExpiredSignatureError
+from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 import datetime
 
 user_route = Blueprint('user', __name__)
@@ -78,29 +78,37 @@ def signup():
 def confirmation(token):
     try:
         decode = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+
     except ExpiredSignatureError as e:
-        message = 'Token Expirado!' +  f'ERROR: {e}'
+        message = f"""Token Expirado! ERROR: {e}
+Faça login novamente para solicitar um nove token de autenticação!"""
+        return message
+    except InvalidSignatureError as e:
+        message = f"""Token Corronpido! ERROR: {e}
+Faça login novamente para solicitar um nove token de autenticação!"""
+        return message
     else:
-        message = f'Token NÃO expirado {decode}'
-        
-        if User.query.filter_by(email=decode['email']).first():
+            # Não foi testado se existia um cadastro, 
+            # pois entendo que para haver o token deve haver um cadastro antes
             user = User.query.filter_by(email=decode['email']).first()
             user.email_confirmed = True
             try:
                 db.session.commit()
             except OperationalError as e:
                 link = "https://github.com/felipe-fjs"
-                flash(f'Ocorreu algum erro ao confirmar seu email...</br>'
-                      f'Erro: {e}. Consulte o <a href="{link}" target="_blank">desenvolvedor</a> para informar erro')
+                error = f"""Ocorreu algum erro ao confirmar seu email...
+                Erro: {e}. 
+                Faça login para gerar um nove e se persistir consulte o <a href="{link}" target="_blank">desenvolvedor</a> para informar erro!"""
+                return error
             except exc as e:
                 link = "https://github.com/felipe-fjs"
-                flash(f'Ocorreu algum erro ao confirmar seu email...</br>'
-                      f'Erro: {e}. Consulte o <a href="{link}" target="_blank">desenvolvedor</a> para informar erro')
+                error = f"""Ocorreu algum erro ao confirmar seu email...
+                Erro: {e}. 
+                Faça login para gerar um nove e se persistir consulte o <a href="{link}" target="_blank">desenvolvedor</a> para informar erro!"""
+                return error
             else:
 
                 return redirect(url_for('stock.home'))
-
-    return f"<h1>{message}</h1>"
 
 
 @user_route.route('/login')
