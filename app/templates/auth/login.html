@@ -1,0 +1,15 @@
+{% extends 'auth/base.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block head %} {% endblock %}
+
+{% block content %}
+{% set messages = get_flashed_messages() %}
+{% if messages %}
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+{% endif %}
+<h1>Login</h1>
+{% endblock %}

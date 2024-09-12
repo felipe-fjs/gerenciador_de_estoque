@@ -55,7 +55,7 @@ class SignupForm(FlaskForm):
     name = StringField("Nome: ", validators=[DataRequired(), Length(min=3)])
     email = EmailField("Email: ", validators=[DataRequired()])
     pwd = PasswordField("Senha:", validators=[DataRequired()])
-    check_pwd = PasswordField("Senha:", validators=[DataRequired(), EqualTo(pwd, 'As senhas devem ser iguais!')])
+    check_pwd = PasswordField("Senha:", validators=[DataRequired(), EqualTo('pwd', 'As senhas devem ser iguais!')])
 
 
 class ProductForm(FlaskForm):
