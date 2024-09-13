@@ -1,5 +1,6 @@
 from app import login_manager, bcrypt, db, app
 from app.models.user import User, SignupForm
+from app.decoratos.user_auth import reset_token_required
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from smtplib import SMTPException
 from flask_login import current_user, login_user, logout_user, login_required
@@ -9,7 +10,7 @@ import sqlalchemy.exc as exc
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 import datetime
-from CONFIG import SALT_FOR_TOKEN_1, SALT_FOR_TOKEN_2
+from CONFIG import SALT_FOR_TOKEN_2
 
 user_route = Blueprint('user', __name__)
 
@@ -146,49 +147,65 @@ def logout():
 
 
 @user_route.route('/redefinir-senha/', methods=['GET', 'POST'])
-@user_route.route('/redefinir-senha/<token>')
-def reset_pwd(token=0):
+def reset_pwd():
     if request.method == 'POST':
-        if not token:
-            # GERAR O LINK COM TOKEN PARA REDEFINIR SENHA
-            if not User.query.filter_by(email=request.form['email']).first():
-                flash('Email não cadastrado!')
-                return redirect(url_for('user.reset_pwd'))
+        print('GERAR TOKEN')
+        # GERAR O LINK COM TOKEN PARA REDEFINIR SENHA
+        if not User.query.filter_by(email=request.form['email']).first():
+            flash('Email não cadastrado!')
+            return redirect(url_for('user.reset_pwd'))
 
-            user = User.query.filter_by(email=request.form['email']).first()
-            payload = {'id': user.id,
-                    'exp': datetime.datetime.now(datetime.UTC)+datetime.timedelta(hours=24)}
-            code = jwt.encode(payload, SALT_FOR_TOKEN_1, algorithm='HS256')
-            link = url_for('user.reset_pwd', token=code, _external=True)
-            subject = f'Link para redefinição de senha de {user.name}!'
-            body = f'Olá, {user.name}! O link a seguir é para a redefinição de senha solicitada para a sua conta no Gerenciador De Estoque e tem um duração de 60 MINUTOS! <br> {link}'
-            message = EmailMessage(subject=subject, body=body, from_email=app.config['MAIL_USERNAME'], to=[user.email])
-            try:
-                message.send()
-            except SMTPException as e:
-                flash(f'ocorreu um erro ao enviar o email com o link!<br>erro: {e}')
-            else:
-                flash(f'Email enviado com sucesso!')
-            finally:
-                return redirect(url_for('user.reset_pwd'))
+        user = User.query.filter_by(email=request.form['email']).first()
+        payload = {
+            'allow_reset': True,
+            'id': user.id,
+            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)
+        }
         
-        # FAZ DECODE DO TOKEN E redirect para rota de nova_senha
-        decode = jwt.decode(token, SALT_FOR_TOKEN_1, algorithms='HS256')
-        if User.query.filter_by(id=decode['id']).first():
-            user = User.query.filter_by(id=decode['id']).first()
-            payload = {
-                'allow_reset': True,
-                'id': user.id,
-                'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)
-            }
-            token = jwt.encode(payload, SALT_FOR_TOKEN_2, algorithm='HS256')
-            session['token_for_reset'] = token
-            return redirect(url_for('user.new_pwd'))
-            
+        code = jwt.encode(payload, SALT_FOR_TOKEN_2, algorithm='HS256')
+
+        link = url_for('user.new_pwd', token=code, _external=True, _method='GET')
+        subject = f'Link para redefinição de senha de {user.name}!'
+        body = f'Olá, {user.name}! O link a seguir é para a redefinição de senha solicitada para a sua conta no Gerenciador De Estoque e tem um duração de 60 MINUTOS! <br> {link}'
+        message = EmailMessage(subject=subject, body=body, from_email=app.config['MAIL_USERNAME'], to=[user.email])
+        try:
+            message.send()
+        except SMTPException as e:
+            flash(f'ocorreu um erro ao enviar o email com o link!<br>erro: {e}')
+        else:
+            flash(f'Email enviado com sucesso!')
+        finally:
+            return redirect(url_for('user.reset_pwd'))
+        
+    # if request.args.get("token"):  
+    #     token = request.args.get("token")
+    #     # FAZ DECODE DO TOKEN E redirect para rota de nova_senha
+    #     print("REDIRECT PARA NOVA_SENHA")
+    #     try:
+    #         decode = jwt.decode(token, SALT_FOR_TOKEN_1, algorithms='HS256')
+    #     except ExpiredSignatureError:
+    #         flash("Seu Token para nova senha EXPIROU!")
+    #         return redirect(url_for('user.reset_pwd'))
+    #     except InvalidSignatureError:
+    #         flash('Seu Token está CORROMPIDO!')
+    #         return redirect(url_for('user.reset_pwd'))
+    #     # Entendo que não é necessário verificar existência de cadastro
+    #     # pois para haver link para redefinição deve haver um cadastro antes        
+    #     user = User.query.filter_by(id=decode['id']).first()
+    #     payload = {
+    #         'allow_reset': True,
+    #         'id': user.id,
+    #         'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)
+    #     }
+    #     token = jwt.encode(payload, SALT_FOR_TOKEN_2, algorithm='HS256')
+    #     session['token_for_reset'] = token
+    #     return redirect(url_for('user.new_pwd'))
+    # print('não entrou em nada')       
     return render_template('auth/reset-pwd.html')
 
 
 @user_route.route('/nova-senha')
-def new_pwd():
-
+@user_route.route('/nova-senha/<token>')
+def new_pwd(token):
+    print(token)
     return "<h1>Page para nova senha</h1>"
