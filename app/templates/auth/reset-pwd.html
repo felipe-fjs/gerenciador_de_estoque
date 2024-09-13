@@ -1,0 +1,21 @@
+{% extends "auth/base.html" %}
+
+{% block title %}Redefinição de senha {% endblock %}
+
+{% block head %} {% endblock %}
+
+{% block content %}
+{% set messages = get_flashed_messages() %}
+{% if messages %}
+    {% for message in messages %}
+        <div>{{ message }}</div>
+    {% endfor %}
+{% endif %}
+<form action="{{ url_for('user.reset_pwd') }}" method="post">
+    <p>
+        <label for="email">Digite o email da conta para redefinir a senha:</label>
+        <input type="email" name="email" id="email">
+    </p>
+    <button type="submit">Enviar link</button>
+</form>
+{% endblock %}

@@ -1,13 +1,15 @@
-from app import login_manager, bcrypt, db, app, mail
+from app import login_manager, bcrypt, db, app
 from app.models.user import User, SignupForm
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from smtplib import SMTPException
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
+from flask_mailman import EmailMessage
 from sqlalchemy.exc import OperationalError
 import sqlalchemy.exc as exc
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
 import datetime
+from CONFIG import SALT_FOR_TOKEN_1, SALT_FOR_TOKEN_2
 
 user_route = Blueprint('user', __name__)
 
@@ -15,14 +17,6 @@ user_route = Blueprint('user', __name__)
 @login_manager.user_loader
 def get_user(id):
     return User.query.filter_by(id=id).first()
-
-
-@app.route('/')
-@app.route('/login')
-def redirect_login():
-    if current_user.is_authenticated:
-        return redirect(url_for('stock.home'))
-    return redirect(url_for('user.login'))
 
 
 @user_route.route('/signup', methods=['GET', 'POST'])
@@ -62,9 +56,11 @@ def signup():
                     body = (f'Olá {new_user.name}, logo abaixo estará o link para a confirmação do seu email, clique '
                             f'ou copie e cole-o em seu navegador para acessá-lo\n {link}')
 
-                    mail.send_mail(subject=subject, message=body, from_email=app.config['MAIL_USERNAME'],
-                                   recipient_list=[new_user.email], auth_user=app.config['MAIL_USERNAME'],
-                                   auth_password=app.config['MAIL_PASSWORD'])
+                    message = EmailMessage(subject=subject, 
+                                           body=body, 
+                                           from_email=app.config['MAIL_USERNAME'], 
+                                           to=[new_user.email])
+                    message.send()
                     
                 except SMTPException as e:
                     flash(f'Ocorreu algum erro ao enviar o email para confirmação: {e}.'
@@ -119,6 +115,8 @@ Faça login novamente para solicitar um nove token de autenticação!"""
                 return redirect(url_for('stock.home'))
 
 
+@app.route('/')
+@app.route('/login')
 @user_route.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -140,12 +138,57 @@ def login():
 
 
 @user_route.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('Você foi deslogado com sucesso!')
     return redirect(url_for('user.login'))
 
 
-@user_route.route('/redefinir-senha')
-def reset_pwd():
-    pass
+@user_route.route('/redefinir-senha/', methods=['GET', 'POST'])
+@user_route.route('/redefinir-senha/<token>')
+def reset_pwd(token=0):
+    if request.method == 'POST':
+        if not token:
+            # GERAR O LINK COM TOKEN PARA REDEFINIR SENHA
+            if not User.query.filter_by(email=request.form['email']).first():
+                flash('Email não cadastrado!')
+                return redirect(url_for('user.reset_pwd'))
+
+            user = User.query.filter_by(email=request.form['email']).first()
+            payload = {'id': user.id,
+                    'exp': datetime.datetime.now(datetime.UTC)+datetime.timedelta(hours=24)}
+            code = jwt.encode(payload, SALT_FOR_TOKEN_1, algorithm='HS256')
+            link = url_for('user.reset_pwd', token=code, _external=True)
+            subject = f'Link para redefinição de senha de {user.name}!'
+            body = f'Olá, {user.name}! O link a seguir é para a redefinição de senha solicitada para a sua conta no Gerenciador De Estoque e tem um duração de 60 MINUTOS! <br> {link}'
+            message = EmailMessage(subject=subject, body=body, from_email=app.config['MAIL_USERNAME'], to=[user.email])
+            try:
+                message.send()
+            except SMTPException as e:
+                flash(f'ocorreu um erro ao enviar o email com o link!<br>erro: {e}')
+            else:
+                flash(f'Email enviado com sucesso!')
+            finally:
+                return redirect(url_for('user.reset_pwd'))
+        
+        # FAZ DECODE DO TOKEN E redirect para rota de nova_senha
+        decode = jwt.decode(token, SALT_FOR_TOKEN_1, algorithms='HS256')
+        if User.query.filter_by(id=decode['id']).first():
+            user = User.query.filter_by(id=decode['id']).first()
+            payload = {
+                'allow_reset': True,
+                'id': user.id,
+                'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=1)
+            }
+            token = jwt.encode(payload, SALT_FOR_TOKEN_2, algorithm='HS256')
+            session['token_for_reset'] = token
+            return redirect(url_for('user.new_pwd'))
+            
+    return render_template('auth/reset-pwd.html')
+
+
+@user_route.route('/nova-senha')
+def new_pwd():
+
+    return "<h1>Page para nova senha</h1>"

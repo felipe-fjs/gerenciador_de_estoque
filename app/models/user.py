@@ -43,7 +43,7 @@ class Product(db.Model):
         self.desc = desc 
         self.preco = preco
         self.quant = quant
-        self.user_id
+        self.user_id = user_id
 
     def __repr__(self):
         return f"Cód: {self.cod}\npreco: {self.preco}\nQuant: {self.quant}\nValor Total desse produto: {self.preco * self.quant}"
