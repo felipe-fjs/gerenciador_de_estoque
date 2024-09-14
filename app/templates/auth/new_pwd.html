@@ -1,0 +1,43 @@
+{% extends "auth/base.html" %}
+
+{% block title %} Nova senha {% endblock %}
+
+{% block head %}
+    <style>
+        p#pass_warning {
+            display: none;
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <form action="{{ url_for('user.new_pwd')}}" method="post">
+        <p>
+            <label for="pwd">Nova Senha: </label>
+            <input type="password" name="pwd" id="pwd">
+        </p>
+        <p>
+            <label for="check_pwd">Repita a nova senha: </label>
+            <input type="password" name="check_pwd" id="check_pwd">
+            <p id="pass_warning">As senhas devem ser iguais!</p>
+        </p>
+        <button type="submit" id="btn" disabled>Cadastrar nova senha</button>
+    </form>
+    <script>
+        let password = document.getElementById('pwd');
+        let password_check = document.getElementById('check_pwd');
+        const pass_warning = document.getElementById('pass_warning');
+        function verifyPass() {
+            if (password.value !== password_check.value) {
+                pass_warning.style.display = 'block';
+                btn.disabled = true
+            } else {
+                pass_warning.style.display = 'none'
+                btn.disabled = false
+            }
+        }
+        
+        password_check.addEventListener('input',  verifyPass);
+    </script>
+{% endblock %}

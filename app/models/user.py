@@ -19,7 +19,7 @@ class User(db.Model, UserMixin):
     def __init__(self, name, email, pwd):
         self.name = name
         self.email = email
-        self.pwd = pwd
+        self.pwd = bcrypt.generate_password_hash(pwd)
 
     def __repr__(self):
         return f"Name: {self.name}\nEmail: {self.email}\nConfirmed: {self.email_confirmed}\nCreated at : {self.created_at}"

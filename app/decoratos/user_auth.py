@@ -5,10 +5,10 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, DecodeError, InvalidTokenError
 
 
-def reset_token_required(f, token):
+def reset_token_required(f):
     @wraps(f)
     def decored_function(*args, **kwargs):
-        if not session.ge('token_for_reset') or not request.args.get('token'):
+        if not session.get('token_for_reset') or not request.args.get('token'):
             flash('Você precisa ter um token de nova-senha para acessar essa página!')
             return redirect(url_for('user.reset_pwd'))
 

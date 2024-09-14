@@ -28,10 +28,9 @@ def signup():
     form = SignupForm()
     if request.method == 'POST':
         if not User.query.filter_by(email=request.form['email']).first():
-            pwd = bcrypt.generate_password_hash(request.form['pwd'])
             new_user = User(request.form['name'],
                             request.form['email'],
-                            pwd)
+                            request.form['pwd'])
             try:
                 # realiza a tentativa de cadastrar o usuário
                 db.session.add(new_user)
@@ -159,6 +158,7 @@ def reset_pwd():
         payload = {
             'allow_reset': True,
             'id': user.id,
+            'email': user.email,
             'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)
         }
         
@@ -201,11 +201,43 @@ def reset_pwd():
     #     session['token_for_reset'] = token
     #     return redirect(url_for('user.new_pwd'))
     # print('não entrou em nada')       
-    return render_template('auth/reset-pwd.html')
+    return render_template('auth/reset_pwd.html')
 
 
-@user_route.route('/nova-senha')
-@user_route.route('/nova-senha/<token>')
+@user_route.route('/nova-senha/', defaults={'token': None}, methods=['POST'])
+@user_route.route('/nova-senha/<token>', methods=['GET'])
 def new_pwd(token):
-    print(token)
-    return "<h1>Page para nova senha</h1>"
+    if request.method == 'POST':
+        user_info = jwt.decode(session['token'], SALT_FOR_TOKEN_2, algorithms='HS256')
+        new_pwd = request.form['pwd']
+        try:
+            user = User.query.filter_by(email=user_info['email']).first()
+            user.pwd = bcrypt.generate_password_hash(new_pwd)
+            db.session.commit()
+        except OperationalError:
+            flash('ocorreu um erro ao salvar sua nova senha... tente novamente.')
+            db.session.close()
+            return redirect(url_for('user.new_pwd'))
+        else:
+            session.pop('token')
+
+        return redirect(url_for('user.login'))
+
+    try:
+        decode = jwt.decode(token, SALT_FOR_TOKEN_2, algorithms='HS256')
+
+    except ExpiredSignatureError:
+        flash('Seu token expirou!')
+        return redirect(url_for('user.login'))
+    
+    except InvalidSignatureError:
+        flash('Seu Token está CORROMPIDO!')
+        return redirect(url_for('user.login'))
+    
+    if not User.query.filter_by(email=decode['email']):
+        flash('O Email deste token não foi encontrado no banco de dados!')
+        return redirect(url_for('user.login'))
+
+    session['token'] = token
+
+    return render_template('auth/new_pwd.html')
