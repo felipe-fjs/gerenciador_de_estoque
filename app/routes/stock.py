@@ -1,5 +1,5 @@
 from app import db
-from app.models.user import Product, ProductForm
+from app.models.product import Product, ProductForm
 from flask import Blueprint, url_for, render_template, flash, request, redirect, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import OperationalError
