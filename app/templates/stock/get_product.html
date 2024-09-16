@@ -6,5 +6,27 @@
 
 {% block content %}
 <h1>Read produtos</h1>
+<form aria-disabled="true">
+    <p>
+        <label for="cod">Código do produto:</label>
+        <input type="number" name="cod" id="cod" value="{{ product.cod }}" disabled>
+    </p>
+    <p>
+        <label for="desc">Descrição: </label>
+        <textarea name="desc" id="desc" cols="30" disabled>{{ product.desc }}</textarea>
+    </p>
+    <p>
+        <label for="preco">Preço:</label>
+        <input type="number" name="preco" id="preco" value="{{ product.preco }}" disabled>
+    </p>
+    <p>
+        <label for="quant">Quantidade: </label>
+        <input type="number" name="quant" id="quant" value="{{ product.quant }}" disabled>
+    </p>
+    <p>
+        <label for="total">Total: R$</label>
+        <input type="text" name="total" id="total" value="{{ product.preco * product.quant }}" disabled>
+    </p>
+</form>
     {{ product }}
 {% endblock %}
