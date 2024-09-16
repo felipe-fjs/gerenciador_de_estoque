@@ -45,9 +45,37 @@ class Product(db.Model):
         self.quant = quant
         self.user_id = user_id
 
+
     def __repr__(self):
         return f"Cód: {self.cod}\npreco: R$ {self.preco:.2f}\nQuant: {self.quant}\nValor Total desse produto: R$ {self.preco * self.quant:.2f}"
 
+    def get_total(self):
+        return self.quant*self.preco
+    
+    def get_total_str(self):
+        total = self.get_total()
+        total_spt = list(str(total).split('.')[0][::-1])
+        decimal = str(total).split('.')[1]
+        for i in range(len(total_spt)):
+            if i > 0 and i % 3 == 0:
+                total_spt.insert(i, '.')
+        total = ''
+        for n in total_spt[::-1]:
+            total += f'{n}'
+        return total+','+decimal
+
+    @classmethod
+    def price_number_to_str(clas, value):
+        total = round(float(value), 2)
+        total_spt = list(str(total).split('.')[0][::-1])
+        decimal = str(total).split('.')[1]
+        for i in range(len(total_spt)):
+            if i > 0 and i % 3 == 0:
+                total_spt.insert(i, '.')
+        total = ''
+        for n in total_spt[::-1]:
+            total += f'{n}'
+        return f'{total},{decimal}'
 
 class LoginForm(FlaskForm):
     name = StringField("Nome: ", validators=[DataRequired(), Length(min=3)])

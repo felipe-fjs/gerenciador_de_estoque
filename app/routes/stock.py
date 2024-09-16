@@ -40,8 +40,15 @@ def home():
     except OperationalError:
         products = []
         flash('Ocorreu algum erro ao recuperar os produtos em seu estoque no banco de dados....')
+    else:
+        total = 0
+        for product in products:
+            total +=  product.get_total()
 
-    return render_template('stock/home.html', products=products)
+        total = Product.price_number_to_str(total)
+        print(total)
+        
+    return render_template('stock/home.html', products=products, total=total)
 
 
 @stock_route.route('/produto/novo', methods=['POST', 'GET'])

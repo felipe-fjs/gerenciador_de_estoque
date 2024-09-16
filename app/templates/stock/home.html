@@ -2,7 +2,14 @@
 
 {% block title %} Início {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %}
+    <style>
+        table {
+            text-align: center;
+            width: 80%;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
 <main>
@@ -21,16 +28,22 @@
 
                 <tbody>
                     {% for product in products %}
-                        {{ product }}
+                        <tr>
+                            <td>{{product.cod}}</td>
+                            <td>{{product.desc}}</td>
+                            <td>R$ {{product.preco}}</td>
+                            <td>{{product.quant}}</td>
+                            <td>R$ {{product.get_total_str() }}</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
 
                 <tfoot>
                     <tr>
-                        <th scope="row" colspan="">
+                        <th scope="row" colspan="4">
                             Total
                         </th>
-                        <td></td>
+                        <td>R$ {{ total }}</td>
                     </tr>
                 </tfoot>
             </table>
