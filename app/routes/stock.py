@@ -1,6 +1,6 @@
 from app import db
 from app.models.user import Product, ProductForm
-from flask import Blueprint, url_for, render_template, flash, request, redirect
+from flask import Blueprint, url_for, render_template, flash, request, redirect, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import OperationalError
 
@@ -85,15 +85,31 @@ def get_product(id):
     return render_template('stock/get_product.html', product=product)
 
 
-@stock_route.route('/produto/edit/', defaults={'id':None}, methods=['PUT', 'GET'])
-@stock_route.rotue('/produto/edit/<id>')
+@stock_route.route('/produto/edit/', defaults={'id':None}, methods=['GET', 'PUT'])
+@stock_route.route('/produto/edit/<id>', methods=['PUT', 'GET'])
+@login_required
 def edit_product(id):
     if not id:
         id = request.args.get('id')
+
     if request.method == 'PUT':
-        product = Product.query.filter_by(id=id).first()
-        
-        pass
+        try:
+            update_product= request.json
+            product = Product.query.filter_by(id=id).first()
+            product.cod = update_product['cod']
+            product.desc = update_product['desct']
+            product.preco = update_product['preco']
+            product.quant = update_product['quant']
+            db.session.commit()
+        except OperationalError:
+            flash(f'Ocorreu algum erro ao atualizar o produto de id {id}.')
+            db.session.close()
+            return jsonify(ok=False)
+        else:
+            flash(f'produto de id {id} foi atualizado com sucesso!')
+        finally:
+            db.session.close()
+            return jsonify(ok=True, url=url_for('stock.get_product', id=id))
 
     product = Product.query.filter_by(id=id).first()
     return render_template('stock/edit_product.html', product=product)

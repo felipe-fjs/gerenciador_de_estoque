@@ -2,9 +2,79 @@
 
 {% block title %} Alterar {{ product.desc }} {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %}
+    <style>
+        textarea {
+            height: fit-content;
+            resize: vertical;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
 <h1>Update produtos</h1>
-    {{ product }}
+    {% set messages = get_flashed_messages() %}
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form id="form_update">
+        {{ product }}
+        <p>
+            <input type="hidden" id="id" value="{{ product.id }}">
+            <label for="cod">Código do produto:</label>
+            <input type="number" name="cod" id="cod" value="{{ product.cod }}">
+        </p>
+        <p>
+            <label for="desc">Descrição:</label>
+            <textarea name="desc" id="desc" cols="30">{{ product.desc }}</textarea>
+        </p>
+        <p>
+            <label for="preco">Preço:</label>
+            <input type="number" name="preco" id="preco" value="{{ product.preco }}">
+        </p>
+        <p>
+            <label for="quant">Quantidade:</label>
+            <input type="number" name="quant" id="quant" step="0.01" value="{{ product.quant }}">
+        </p>
+        <button type="submit">Atualizar</button>
+    </form>
+    <script>
+        // Para mandar put ao back-end
+        document.getElementById('form_update').addEventListener('submit',  function (event) {
+            event.preventDefault()
+
+            let product = {
+                id : document.getElementById('id').value,
+                cod : cod.value,
+                desc: desc.value,
+                preco: preco.value,
+                quant: quant.value
+            }
+
+            let url = "{{ url_for('stock.edit_product', id=product.id)}}"
+
+            fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(product),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data['ok']) {
+                    window.location.href  = data['url']
+                } else {
+                    window.location.reload()
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+
+        })
+    </script>
 {% endblock %}
