@@ -36,7 +36,7 @@ stock_route = Blueprint('stock', __name__)
 @login_required
 def home():
     try:
-        products = Product.query.filter_by(user_id=current_user.id).all()
+        products = Product.query.filter_by(user_id=current_user.id, active=True).all()
     except OperationalError:
         products = []
         flash('Ocorreu algum erro ao recuperar os produtos em seu estoque no banco de dados....')
