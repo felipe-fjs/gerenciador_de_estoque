@@ -1,0 +1,42 @@
+{% extends "stock/base.html" %}
+
+{% block title %} Novo produto {% endblock %}
+
+{% block head %} {% endblock %}
+
+{% block content %}
+<main>
+    {% set messages = get_flashed_messages() %}
+    {% if messages %}
+        <section class="alert alert-warning">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </section>
+    {% endif %}
+    
+    <section>
+        <form action="{{ url_for('stock.new_product')}}" method="post">
+            {{ form.csrf_token }}
+            <p>
+                <label for="cod">Código presente na nota fiscal:</label>
+                {{ form.cod }}
+            </p>
+            <p>
+                <label for="desc">Descrição do produtos</label>
+                {{ form.desc }}
+            </p>
+            <p>
+                <label for="preco">Preço por unidade:</label>
+                {{ form.preco(step='0.01') }}
+            </p>
+            <p>
+                <label for="quant">Quantidade do produto:</label>
+                {{ form.quant }}
+            </p>
+            <button type="submit">Cadastrar</button>
+            <button type="reset">Limpar</button>
+        </form>
+    </section>
+</main>
+{% endblock %}

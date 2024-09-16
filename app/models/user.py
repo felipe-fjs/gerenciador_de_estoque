@@ -2,7 +2,7 @@ from app import db, bcrypt
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
 from flask_wtf import FlaskForm
 from flask_login import UserMixin
-from wtforms import StringField, EmailField, PasswordField, FloatField, IntegerField
+from wtforms import StringField, EmailField, PasswordField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, Length, EqualTo
 from datetime import datetime
 
@@ -46,7 +46,7 @@ class Product(db.Model):
         self.user_id = user_id
 
     def __repr__(self):
-        return f"Cód: {self.cod}\npreco: {self.preco}\nQuant: {self.quant}\nValor Total desse produto: {self.preco * self.quant}"
+        return f"Cód: {self.cod}\npreco: R$ {self.preco:.2f}\nQuant: {self.quant}\nValor Total desse produto: R$ {self.preco * self.quant:.2f}"
 
 
 class LoginForm(FlaskForm):
@@ -65,6 +65,6 @@ class SignupForm(FlaskForm):
 class ProductForm(FlaskForm):
     cod = StringField("Código do Produto:", validators=[DataRequired()])
     desc = StringField("Descrição do produto: ", validators=[DataRequired()])
-    preco = FloatField("Preço Produto: ", validators=[DataRequired()])
+    preco = DecimalField("Preço Produto: ", validators=[DataRequired()])
     quant = IntegerField("Quantidade: ", validators=[DataRequired()])
     
