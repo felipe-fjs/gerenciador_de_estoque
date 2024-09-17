@@ -2,7 +2,13 @@
 
 {% block title %} {{ product.desc }} {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %}
+    <style>
+        div#msg-confirm {
+            display: none;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
 <h1>Read produtos</h1>
@@ -27,6 +33,37 @@
         <label for="total">Total: R$</label>
         <input type="text" name="total" id="total" value="{{ product.preco * product.quant }}" disabled>
     </p>
+    <a href="{{ url_for('stock.edit_product', id=product.id)}}">Editar produto</a>
+
+    <section>
+    {% if product.active %}
+            <button type="button" onclick="check()">Desativar Produto</button>
+            <div id="msg-confirm">
+                Deseja confirmar a desativação do produto "{{ product.desc[:21]}}..."?
+                <button type="button" onclick="check()">Cancelar</button>
+                <a href="{{ url_for('stock.deactivate_product', id=product.id)}}">Confirmar desativação do produto</a>
+            </div>
+        </section>
+    {% else %}
+        <section>
+            <button type="button" onclick="check()">Ativar produto</button>
+            <div id="msg-confirm">
+                Deseja confirmar a ativação do produto "{{ product.desc[:21] }}..."?
+                <button type="button" onclick="check()">Cancelar</button>
+                <a href="{{ url_for('stock.activate_product', id=product.id)}}">Confirmar REativação do produto</a>
+            </div>
+            {% endif %}
+    </section>
+    
 </form>
-    {{ product }}
+<script>
+    const msg = document.getElementById('msg-confirm')
+    function check(){
+        if (window.getComputedStyle(msg).display == 'none') {
+            msg.style.display = 'block'
+        } else {
+            msg.style.display = 'none'
+        }
+    }
+</script>
 {% endblock %}

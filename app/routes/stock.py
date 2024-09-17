@@ -129,26 +129,54 @@ def edit_product(id):
 
 @stock_route.route('produto/desativar/', defaults={'id':None}, methods=['PUT'])
 @stock_route.route('produto/desativar/<id>')
+@login_required
 def deactivate_product(id):
     if not id:
         id = request.args.get('id')
 
     try:
+        # acessando produto
         product = Product.query.filter_by(id=id).first()
     except OperationalError:
         flash(f'Ocorreu um erro ao acessar o produto de id {id}. Reportar erro ao desenvolvedor do sistema!')
-        
     else:
+        # desativando produto
         product.active = False
         try:
             db.session.commit()
         except OperationalError:
             flash(f'ocorreu um erro ao desativar o produto {product.desc[:21]}. Reportar erro ao desenvolvedor do sistema!')
-            return jsonify(ok=False)
         else:
             flash(f'Produto "{product.desc[:21]}" foi desativado com sucesso!')
     finally:
         db.session.close()
-    
 
-    return jsonify(ok=True, url=url_for('stock.get_product', id=id))
+    return redirect(url_for('stock.get_product', id=id))
+
+
+@stock_route.route('produto/ativar/', defaults={'id':None})
+@stock_route.route('produto/ativar/<id>')
+@login_required
+def activate_product(id):
+    if not id:
+        id = request.args.get('id')
+
+    try:
+        # acessando produto
+        product = Product.query.filter_by(id=id).first()
+    except OperationalError:
+        flash(f'Ocorreu um erro ao acessar o produto de id {id}. Reportar erro ao desenvolvedor do sistema!')
+    else:
+        # desativando produto
+        product.active = True
+        try:
+            db.session.commit()
+        except OperationalError:
+            flash(f'ocorreu um erro ao desativar o produto {product.desc[:21]}. Reportar erro ao desenvolvedor do sistema!')
+        else:
+            flash(f'Produto "{product.desc[:21]}" foi desativado com sucesso!')
+    finally:
+        db.session.close()
+
+    return redirect(url_for('stock.get_product', id=id))
+

@@ -8,6 +8,12 @@
             text-align: center;
             width: 80%;
         }
+        tr {
+            cursor: pointer;
+        }
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.493);
+        }
     </style>
 {% endblock %}
 
@@ -28,7 +34,7 @@
 
                 <tbody>
                     {% for product in products %}
-                        <tr>
+                        <tr onclick="window.location.href = `{{ url_for('stock.get_product', id=product.id)}}`">
                             <td>{{product.cod}}</td>
                             <td>{{product.desc}}</td>
                             <td>R$ {{product.preco}}</td>
