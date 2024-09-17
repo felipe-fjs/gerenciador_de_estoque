@@ -46,7 +46,7 @@ def home():
             total +=  product.get_total()
 
         total = Product.price_number_to_str(total)
-        print(total)
+        db.session.close()
         
     return render_template('stock/home.html', products=products, total=total)
 
@@ -88,7 +88,12 @@ def get_product(id):
         flash(f'Nenhum produto foi encontrado com esse id.')
         return redirect(url_for('stock.home'))
     
-    product = Product.query.filter_by(id=id).first()
+    try:
+        product = Product.query.filter_by(id=id).first()
+    except OperationalError:
+        flash(f'ocorreu um erro ao carregar o produto de id {id}')
+    finally:
+        db.session.close()
     return render_template('stock/get_product.html', product=product)
 
 
@@ -121,3 +126,29 @@ def edit_product(id):
     product = Product.query.filter_by(id=id).first()
     return render_template('stock/edit_product.html', product=product)
 
+
+@stock_route.route('produto/desativar/', defaults={'id':None}, methods=['PUT'])
+@stock_route.route('produto/desativar/<id>')
+def deactivate_product(id):
+    if not id:
+        id = request.args.get('id')
+
+    try:
+        product = Product.query.filter_by(id=id).first()
+    except OperationalError:
+        flash(f'Ocorreu um erro ao acessar o produto de id {id}. Reportar erro ao desenvolvedor do sistema!')
+        
+    else:
+        product.active = False
+        try:
+            db.session.commit()
+        except OperationalError:
+            flash(f'ocorreu um erro ao desativar o produto {product.desc[:21]}. Reportar erro ao desenvolvedor do sistema!')
+            return jsonify(ok=False)
+        else:
+            flash(f'Produto "{product.desc[:21]}" foi desativado com sucesso!')
+    finally:
+        db.session.close()
+    
+
+    return jsonify(ok=True, url=url_for('stock.get_product', id=id))

@@ -117,6 +117,7 @@ Faça login novamente para solicitar um nove token de autenticação!"""
 
 @app.route('/')
 @app.route('/login')
+@user_route.route('/')
 @user_route.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
