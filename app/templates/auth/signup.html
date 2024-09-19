@@ -1,33 +1,48 @@
 {% extends 'auth/base.html' %}
 
-{% block title %} {% endblock %}
+{% block title %}Cadastrar-se {% endblock %}
 
 {% block head %} {% endblock %}
 
 {% block content %}
-{% set messages = get_flashed_messages() %}
-{% if messages %}
-    {% for message in messages %}
-        {{ message }}
-    {% endfor %}
-{% endif %}
-<form action="{{ url_for('user.signup')}}" method="post">
-    <p>
-        <label for="name">Nome: </label>
-        {{ form.name }}
-    </p>
-    <p>
-        <label for="email">Email:</label>
-        {{ form.email }}
-    </p>
-    <p>
-        <label for="wpd">Senha: </label>
-        {{ form.pwd }}
-    </p>
-    <p>
-        <label for="check_pwd">Repita a senha: </label>
-        {{ form.check_pwd }}
-    </p>
-    <button type="submit">Cadastrar-se</button>
-</form>
+<main>
+    <div>
+        
+        <section class="auth-form">
+            <h1>ESTOQUE</h1>
+            {% set messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-warning">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form action="{{ url_for('user.signup')}}" method="post">
+                <p>
+                    <label for="name">Nome: </label>
+                    {{ form.name }}
+                </p>
+                <p>
+                    <label for="email">Email:</label>
+                    {{ form.email }}
+                </p>
+                <p>
+                    <label for="wpd">Senha: </label>
+                    {{ form.pwd }}
+                </p>
+                <p>
+                    <label for="check_pwd">Repita a senha: </label>
+                    {{ form.check_pwd }}
+                </p>
+                <button type="submit" class="btn btn-secondary">Cadastrar-se</button><br>
+                <a href="{{ url_for('user.login')}}">Tem conta? Faça login</a>
+            </form>
+        </section>
+        <p class="text-center" id="portfolio-link">
+            Feito por <a class="text-reset" href="https://github.com/felipe-fjs" target="_blank">Felipe Joaquim</a>
+        </p>
+    </div>
+</main>
+
 {% endblock %}
