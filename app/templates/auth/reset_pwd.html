@@ -5,17 +5,36 @@
 {% block head %} {% endblock %}
 
 {% block content %}
-{% set messages = get_flashed_messages() %}
-{% if messages %}
-    {% for message in messages %}
-        <div>{{ message }}</div>
-    {% endfor %}
-{% endif %}
-<form action="{{ url_for('user.reset_pwd') }}" method="post">
-    <p>
-        <label for="email">Digite o email da conta para redefinir a senha:</label>
-        <input type="email" name="email" id="email">
-    </p>
-    <button type="submit">Enviar link</button>
-</form>
+<main>
+    <div>
+        <section class="auth-form">
+            <form action="{{ url_for('user.reset_pwd') }}" method="post">
+                <h1>ESQUECI A SENHA</h1>
+                <p>Digite seu e-mail para redefinir a senha</p>
+                {% set messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <p>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email">
+                </p>
+                <p>
+                    <button class="btn btn-secondary" type="submit">Enviar link</button>
+                    <span class="block-link">
+                        <a href="{{ url_for('user.login') }}" class="text-reset text-decoration-none">Fazer login</a>
+                        <a href="{{ url_for('user.signup') }}" class="text-reset text-decoration-none">Criar conta</a>
+                    </span>
+                </p>
+                
+            </form>
+        </section>
+        <p class="text-center" id="portfolio-link">
+            Feito por <a class="text-reset" href="https://github.com/felipe-fjs" target="_blank">Felipe Joaquim</a>
+        </p>
+    </div>
+</main>
+
 {% endblock %}

@@ -12,18 +12,34 @@
 {% endblock %}
 
 {% block content %}
-    <form action="{{ url_for('user.new_pwd')}}" method="post">
-        <p>
-            <label for="pwd">Nova Senha: </label>
-            <input type="password" name="pwd" id="pwd">
+
+<main>
+    <div>
+        <section class="auth-form">
+            <form action="{{ url_for('user.new_pwd')}}" method="post">
+                <h1>Nova senha</h1>
+                <p>Digite sua nova senha</p>
+                <p>
+                    <label for="pwd">Nova Senha: </label>
+                    <input type="password" name="pwd" id="pwd">
+                </p>
+                <p>
+                    <label for="check_pwd">Repita a nova senha: </label>
+                    <input type="password" name="check_pwd" id="check_pwd">
+                    <p id="pass_warning">As senhas devem ser iguais!</p>
+                </p>
+                <button type="submit" id="btn" class="btn btn-primary" disabled>Cadastrar nova senha</button>
+            </form>
+        </section>
+        <p class="text-center" id="portfolio-link">
+            Feito por <a class="text-reset" href="https://github.com/felipe-fjs" target="_blank">Felipe Joaquim</a>
         </p>
-        <p>
-            <label for="check_pwd">Repita a nova senha: </label>
-            <input type="password" name="check_pwd" id="check_pwd">
-            <p id="pass_warning">As senhas devem ser iguais!</p>
-        </p>
-        <button type="submit" id="btn" disabled>Cadastrar nova senha</button>
-    </form>
+    </div>
+</main>
+
+
+
+
     <script>
         let password = document.getElementById('pwd');
         let password_check = document.getElementById('check_pwd');
