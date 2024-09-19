@@ -180,3 +180,8 @@ def activate_product(id):
 
     return redirect(url_for('stock.get_product', id=id))
 
+
+@stock_route.route('/exportar')
+def export():
+    # retorna ao usuario um arquivo contendo as informações do estoque  
+    return

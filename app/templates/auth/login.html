@@ -2,25 +2,40 @@
 
 {% block title %} Login {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %}
+    <style>
+        .text-end {
+            float: right;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-{% set messages = get_flashed_messages() %}
-{% if messages %}
-    {% for message in messages %}
-        {{ message }}
-    {% endfor %}
-{% endif %}
-<form action="{{ url_for('user.login') }}" method="post">
-    <p>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email">
-    </p>
-    <p>
-        <label for="pwd">Senha</label>
-        <input type="password" name="pwd" id="pwd">
-    </p>
-    <button type="submit">Login</button>
-    <a href="{{ url_for('user.reset_pwd') }}">Esqueceu a senha?</a>
-</form>
+    {% set messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+<main>
+    <section id="login">
+        <h1>Estoque</h1>
+        <form action="{{ url_for('user.login') }}" method="post">
+            <p>
+                <label for="email">Email</label><br>
+                <input type="email" name="email" id="email">
+            </p>
+            <p>
+                <label for="pwd">Senha</label><br>
+                <input type="password" name="pwd" id="pwd">
+                <a href="{{ url_for('user.reset_pwd') }}" class="text-end text-reset">Esqueceu a senha?</a>
+            </p>
+            <p>
+                <button type="submit" class="btn btn-secondary">Login</button><br>
+                <a href="{{ url_for('user.signup') }}">Cadastrar-se</a>
+            </p>
+        </form>
+    </section>
+
+</main>
 {% endblock %}
