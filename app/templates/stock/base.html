@@ -5,9 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} {% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/geral-stock.css') }}">
     {% block head %} {% endblock %}
 </head>
 <body>
+    <header>
+        <span>
+            <h1>ESTOQUE</h1>
+            <span class="material-symbols-outlined" id="menu-burguer">
+                menu
+            </span>
+        </span>
+        <nav id="navbar">
+            <hr>
+            <a href="{{ url_for('stock.home') }}" class="text-reset">INÍCIO</a>
+            <a href="{{ url_for('stock.new_product') }}" class="text-reset">NOVO PRODUTO</a>
+            <a href="#" class="text-reset">CATEGORIAS DE PRODUTO</a>
+            <a href="#" class="text-reset">EXPORTAR ESTOQUE</a>
+            <a href="{{ url_for('user.logout') }}" class="text-reset">SAIR</a>
+        </nav>
+    </header>
+    <main>
+
+    </main>
     {% block content %} {% endblock %}
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
 </body>

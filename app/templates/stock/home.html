@@ -3,64 +3,83 @@
 {% block title %} Início {% endblock %}
 
 {% block head %}
-    <style>
-        table {
-            text-align: center;
-            width: 80%;
-        }
-        tr {
-            cursor: pointer;
-        }
-        tr:hover {
-            background-color: rgba(0, 0, 0, 0.493);
-        }
-    </style>
+<style>
+    table {
+        text-align: center;
+        width: 80%;
+    }
+
+    tr {
+        cursor: pointer;
+    }
+
+    tr:hover {
+        background-color: rgba(0, 0, 0, 0.493);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <main>
     <section>
         {% if products|length %}
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">Cód.</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Preço</th>
-                        <th scope="col">Quantidade</th>
-                        <th scope="col">Total em estoque</th>                    
-                    </tr>
-                </thead>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Cód.</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Preço</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Total em estoque</th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {% for product in products %}
-                        <tr onclick="window.location.href = `{{ url_for('stock.get_product', id=product.id)}}`">
-                            <td>{{product.cod}}</td>
-                            <td>{{product.desc}}</td>
-                            <td>R$ {{product.preco}}</td>
-                            <td>{{product.quant}}</td>
-                            <td>R$ {{product.get_total_str() }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
+            <tbody>
+                {% for product in products %}
+                <tr onclick="window.location.href = `{{ url_for('stock.get_product', id=product.id)}}`">
+                    <td>{{product.cod}}</td>
+                    <td>{{product.desc}}</td>
+                    <td>R$ {{product.preco}}</td>
+                    <td>{{product.quant}}</td>
+                    <td>R$ {{product.get_total_str() }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
-                <tfoot>
-                    <tr>
-                        <th scope="row" colspan="4">
-                            Total
-                        </th>
-                        <td>R$ {{ total }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="4">
+                        Total
+                    </th>
+                    <td>R$ {{ total }}</td>
+                </tr>
+            </tfoot>
+        </table>
 
         {% else %}
 
-            <div class="alert alert-warning">
-                Você não possui produtos em estoque!
-            </div>
+        <div class="alert alert-warning">
+            Você não possui produtos em estoque!
+        </div>
 
         {% endif %}
     </section>
 </main>
+
+<script>
+    const menu_burguer = document.getElementById('menu-burguer')
+    menu_burguer.addEventListener('click', function (event) {
+        let bab = document.getElementById('navbar')
+        // if (window.getComputedStyle(navbar).display == 'none') {
+        //     navbar.style.display = 'flex'
+        // } else {
+        //     navbar.style.display = 'none'
+        // }
+        if (bab.style.maxHeight == '0px' || bab.style.maxHeight == '' ) {
+            bab.style.maxHeight = "250px"
+        } else {
+            bab.style.maxHeight = 0
+        }
+    })
+</script>
 {% endblock %}
