@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,8 +28,24 @@
     </header>
     <main>
 
+        {% block content %} {% endblock %}
     </main>
-    {% block content %} {% endblock %}
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <script>
+        const menu_burguer = document.getElementById('menu-burguer')
+        menu_burguer.addEventListener('click', function (event) {
+            let bab = document.getElementById('navbar')
+            // if (window.getComputedStyle(navbar).display == 'none') {
+            //     navbar.style.display = 'flex'
+            // } else {
+            //     navbar.style.display = 'none'
+            // }
+            if (bab.style.maxHeight == '0px' || bab.style.maxHeight == '' ) {
+                bab.style.maxHeight = "250px"
+            } else {
+                bab.style.maxHeight = 0
+            }
+        })
+    </script>
 </body>
 </html>

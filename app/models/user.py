@@ -5,6 +5,8 @@ from flask_login import UserMixin
 from wtforms import StringField, EmailField, PasswordField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, Length, EqualTo
 from datetime import datetime
+import dataclasses
+
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'

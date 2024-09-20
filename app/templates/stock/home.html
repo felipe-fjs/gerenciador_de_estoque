@@ -2,26 +2,31 @@
 
 {% block title %} Início {% endblock %}
 
-{% block head %}
-<style>
-    table {
-        text-align: center;
-        width: 80%;
-    }
-
-    tr {
-        cursor: pointer;
-    }
-
-    tr:hover {
-        background-color: rgba(0, 0, 0, 0.493);
-    }
-</style>
-{% endblock %}
+{% block head %} {% endblock %}
 
 {% block content %}
-<main>
-    <section>
+    <section aria-labelledby="stock-information">
+        <h1 id="stock-information">INFORMAÇÕES DE ESTOQUE</h1>
+        <section id="info-background">
+            <div class="info-box">
+                <span class="info-title">Total em estoque</span>
+                <span class="info-value">R$ {{ total }}</span>
+            </div>
+            <div class="info-box">
+                <span class="info-title">Produtos em estoque</span>
+                <span class="info-value">{{ total_produtos }} {% if total_produtos > 1 %} produtos {% else %} produtos {% endif %}</span>
+            </div>
+            <div class="info-box desktop">
+                <span class="info-title">Produtos vendidos</span>
+                <span class="info-value">VALOR</span>
+            </div>
+            <div class="info-box desktop">
+                <span class="info-title">total vendido</span>
+                <span class="info-value">VALOR</span>
+            </div>
+        </section>
+    </section>
+    <section class="table-background">
         {% if products|length %}
         <table>
             <thead>
@@ -30,7 +35,6 @@
                     <th scope="col">Descrição</th>
                     <th scope="col">Preço</th>
                     <th scope="col">Quantidade</th>
-                    <th scope="col">Total em estoque</th>
                 </tr>
             </thead>
 
@@ -41,19 +45,9 @@
                     <td>{{product.desc}}</td>
                     <td>R$ {{product.preco}}</td>
                     <td>{{product.quant}}</td>
-                    <td>R$ {{product.get_total_str() }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
-
-            <tfoot>
-                <tr>
-                    <th scope="row" colspan="4">
-                        Total
-                    </th>
-                    <td>R$ {{ total }}</td>
-                </tr>
-            </tfoot>
         </table>
 
         {% else %}
@@ -64,22 +58,5 @@
 
         {% endif %}
     </section>
-</main>
 
-<script>
-    const menu_burguer = document.getElementById('menu-burguer')
-    menu_burguer.addEventListener('click', function (event) {
-        let bab = document.getElementById('navbar')
-        // if (window.getComputedStyle(navbar).display == 'none') {
-        //     navbar.style.display = 'flex'
-        // } else {
-        //     navbar.style.display = 'none'
-        // }
-        if (bab.style.maxHeight == '0px' || bab.style.maxHeight == '' ) {
-            bab.style.maxHeight = "250px"
-        } else {
-            bab.style.maxHeight = 0
-        }
-    })
-</script>
 {% endblock %}

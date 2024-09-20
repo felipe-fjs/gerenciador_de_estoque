@@ -42,13 +42,15 @@ def home():
         flash('Ocorreu algum erro ao recuperar os produtos em seu estoque no banco de dados....')
     else:
         total = 0
+        total_produtos = 0
         for product in products:
             total +=  product.get_total()
+            total_produtos += product.quant
 
         total = Product.price_number_to_str(total)
         db.session.close()
         
-    return render_template('stock/home.html', products=products, total=total)
+    return render_template('stock/home.html', products=products, total=total, total_produtos=total_produtos)
 
 
 @stock_route.route('/produto/novo', methods=['POST', 'GET'])
