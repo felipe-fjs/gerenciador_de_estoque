@@ -21,20 +21,20 @@
                 {{ form.csrf_token }}
                 <h1 id="form-title">Novo produto</h1>
                 <p>
-                    <label for="cod">Código presente na nota fiscal:</label>
-                    {{ form.cod }}
+                    <label for="cod">Código:</label>
+                    {{ form.cod(class='input', title='Código do produto') }}
                 </p>
                 <p>
-                    <label for="desc">Descrição do produtos</label>
-                    {{ form.desc }}
+                    <label for="desc">Descrição:</label>
+                    {{ form.desc(class='input', title='Pode ser colocado o nome do produto e suas especificações') }}
                 </p>
                 <p>
-                    <label for="preco">Preço por unidade:</label>
-                    {{ form.preco(step='0.01') }}
+                    <label for="preco">Preço unidade:</label>
+                    {{ form.preco(step='0.01', class='input', title='Preço do produto por unidade') }}
                 </p>
                 <p>
-                    <label for="quant">Quantidade do produto:</label>
-                    {{ form.quant }}
+                    <label for="quant">Quantidade:</label>
+                    {{ form.quant(class='input', title='Quantidade do produto em estoque') }}
                 </p>
                 <button type="submit" class="btn btn-primary">Cadastrar</button>
                 <button type="reset" class="btn btn-secondary">Limpar</button>

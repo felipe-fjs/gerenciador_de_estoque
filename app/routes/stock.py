@@ -1,5 +1,5 @@
 from app import db
-from app.models.product import Product, ProductForm
+from app.models.product import Product, ProductForm, ProductCategory
 from flask import Blueprint, url_for, render_template, flash, request, redirect, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import OperationalError
@@ -181,6 +181,17 @@ def activate_product(id):
         db.session.close()
 
     return redirect(url_for('stock.get_product', id=id))
+
+
+@stock_route.route('/categorias')
+def get_categorias():
+    try:
+        categorias = ProductCategory.query.filter_by(user_id=current_user.id).all()
+    except:
+        flash("Ocorreu um erro ao acessar as categorias de produtos!")
+        return redirect(url_for('stock.home'))
+    
+    return render_template('stock/categorias.html')
 
 
 @stock_route.route('/exportar')

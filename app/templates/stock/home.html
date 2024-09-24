@@ -5,24 +5,29 @@
 {% block head %} {% endblock %}
 
 {% block content %}
-    <section aria-labelledby="stock-information">
+    <section id="info-section" aria-labelledby="stock-information">
         <h1 id="stock-information">INFORMAÇÕES DE ESTOQUE</h1>
         <section id="info-background">
-            <div class="info-box">
-                <span class="info-title">Total em estoque</span>
-                <span class="info-value">R$ {{ total }}</span>
+            <div id="info-phone">
+                <div class="info-box">
+                    <span class="info-title">Total em estoque</span>
+                    <span class="info-value">R$ {{ total }}</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-title">Produtos em estoque</span>
+                    <span class="info-value">{{ total_produtos }} {% if total_produtos > 1 %} produtos {% else %} produtos {% endif %}</span>
+                </div>
             </div>
-            <div class="info-box">
-                <span class="info-title">Produtos em estoque</span>
-                <span class="info-value">{{ total_produtos }} {% if total_produtos > 1 %} produtos {% else %} produtos {% endif %}</span>
-            </div>
-            <div class="info-box desktop">
-                <span class="info-title">Produtos vendidos</span>
-                <span class="info-value">VALOR</span>
-            </div>
-            <div class="info-box desktop">
-                <span class="info-title">total vendido</span>
-                <span class="info-value">VALOR</span>
+
+            <div id="info-desktop">
+                <div class="info-box">
+                    <span class="info-title">Produtos vendidos</span>
+                    <span class="info-value">VALOR</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-title">total vendido</span>
+                    <span class="info-value">VALOR</span>
+                </div>
             </div>
         </section>
     </section>
@@ -31,20 +36,20 @@
         <table>
             <thead>
                 <tr>
-                    <th scope="col">Cód.</th>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Preço</th>
-                    <th scope="col">Quantidade</th>
+                    <th scope="col" title="Código">Cód.</th>
+                    <th scope="col" title="Descrição">Descrição</th>
+                    <th scope="col" title="Preço">Preço</th>
+                    <th scope="col" title="Quantidade em estoque">Quantidade</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for product in products %}
                 <tr onclick="window.location.href = `{{ url_for('stock.get_product', id=product.id)}}`">
-                    <td>{{product.cod}}</td>
-                    <td>{{product.desc}}</td>
-                    <td>R$ {{product.preco}}</td>
-                    <td>{{product.quant}}</td>
+                    <td title="Código do produto">{{product.cod}}</td>
+                    <td title="Descrição">{{product.desc[:48]}}...</td>
+                    <td title="Preço">R$ {{product.preco}}</td>
+                    <td title="Quantidade em estoque">{{product.quant}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

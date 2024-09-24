@@ -130,7 +130,7 @@ def login():
 
         user = User.query.filter_by(email=request.form['email']).first()
         if user.verify_pwd(request.form['pwd']):
-            login_user(user)
+            login_user(user, remember=True)
             return redirect(url_for('stock.home'))
         
         flash('Senha incorreta!')

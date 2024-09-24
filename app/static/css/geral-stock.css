@@ -13,6 +13,7 @@ html, body {
 }
 
 header {
+    
     padding: 10px 10px;
     /* background-color: rgb(0, 0, 0, 0.75); */
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(153, 153, 153, 0.25));
@@ -46,38 +47,42 @@ header > nav > a:hover {
     text-decoration: underline white;
 }
 
+/* CSS PARA HOME.HTML */
+#info-section {
+    margin: auto;
+    width: 95%;
+}
+
 #info-background {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+    /* width: 100%; */
 }
+#info-phone, #info-desktop {
+    display: flex;
+    flex-flow: column;
+
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 
 .info-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
-    width: 95%;
-    height: 50px;
-    padding-inline: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    
-    background-color: #4F6D8C; /* Azul claro */
-    color: white;
-}
-.desktop {
-    display: none;
+    width: 100%;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 10px;
+    margin: 10px 0;
+
+    background-color: #4F6D8C;
 }
 
-.info-title {
-
-}
-
-.info-value {
-    color: #00FF1A;
-}
 
 .table-background  {
     margin: 0 auto;
@@ -115,7 +120,15 @@ td + td, th + th {
 tr + tr td, tr + tr th {
     border-top: 1px solid #000;
 } 
+tbody > tr {
+    cursor: pointer;
 
+    /* transition: background .5s; */
+}
+tbody > tr:hover {
+    background-color: rgba(30, 58, 95, 0.5);
+    color: white;
+}
 
 /* CSS PARA NEW_PRODUCT.HTML */
 #back-new-product {
@@ -125,13 +138,76 @@ tr + tr td, tr + tr th {
     align-items: center;
 
     width: 100%;
-    height: 100dvh;
+    height: 100%;
     padding: 10px;
 
 }
 
 .section-form {
-    width: 80%;
+    width: 90%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.3);
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(153, 153, 153, 0.25));
     color: white;
+}
+
+.section-form  h1 {
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.598);
+}
+
+.input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.479);
+    border: 0.5px solid rgba(30, 58, 95, 0.8);
+    border-radius: 5px;
+    padding: 0 5px;
+
+    transition: box-shadow .5s ease;
+}
+.input:focus, .input:hover {
+    box-shadow: 1px 1px 3px black;
+}
+
+
+/* BREACK POINT PARA TABLET */
+@media screen and (min-width: 768px) {
+    /* CSS para o header */
+
+    #info-phone, #info-desktop {
+        flex-flow: row  wrap;
+        justify-content: space-between;
+    }
+    .info-box {
+        width: 45%;
+        height: 50px;
+        margin: 10px 5px;
+        flex-grow: 1;
+    }
+
+    .section-form {
+        width: 650px;
+        transition: width .5s ease;
+    }
+}
+
+@media screen and (min-width: 1024px) {     
+    
+    header > span > span#menu-burguer {
+        float: left;
+    }
+    #info-background {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    #info-phone, #info-desktop {
+        width: 50%;
+        flex-flow: row  wrap;
+        justify-content: space-between;
+    }
+    .info-box {
+        width: 45%;
+        margin: 10px 5px;
+        /* flex-grow: 1; */
+    }
 }
