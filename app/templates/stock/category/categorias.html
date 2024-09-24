@@ -33,7 +33,7 @@
     {% else %}
 
     <div class="alert alert-warning">
-        Você não possui categorias cadastradas!
+        Você não possui categorias cadastradas! <a href="{{ url_for('stock.new_category')}}">Cadastrar categoria</a>
     </div>
 
     {% endif %}

@@ -50,7 +50,7 @@ def home():
         total = Product.price_number_to_str(total)
         db.session.close()
         
-    return render_template('stock/home.html', products=products, total=total, total_produtos=total_produtos)
+    return render_template('stock/product/home.html', products=products, total=total, total_produtos=total_produtos)
 
 
 @stock_route.route('/produto/novo', methods=['POST', 'GET'])
@@ -76,7 +76,7 @@ def new_product():
         
         # parte destinada caso o produto já esteja cadastrado
         
-    return render_template('stock/new_product.html', form=form)
+    return render_template('stock/product/new_product.html', form=form)
 
 
 @stock_route.route('/produto/', defaults={'id': None}, methods=['GET'])
@@ -96,7 +96,7 @@ def get_product(id):
         flash(f'ocorreu um erro ao carregar o produto de id {id}')
     finally:
         db.session.close()
-    return render_template('stock/get_product.html', product=product)
+    return render_template('stock/product/get_product.html', product=product)
 
 
 @stock_route.route('/produto/edit/', defaults={'id':None}, methods=['GET', 'PUT'])
@@ -126,7 +126,7 @@ def edit_product(id):
             return jsonify(ok=True, url=url_for('stock.get_product', id=id))
 
     product = Product.query.filter_by(id=id).first()
-    return render_template('stock/edit_product.html', product=product)
+    return render_template('stock/product/edit_product.html', product=product)
 
 
 @stock_route.route('produto/desativar/', defaults={'id':None}, methods=['PUT'])
@@ -184,14 +184,22 @@ def activate_product(id):
 
 
 @stock_route.route('/categorias')
-def get_categorias():
+@login_required
+def categorias():
     try:
         categorias = ProductCategory.query.filter_by(user_id=current_user.id).all()
     except:
         flash("Ocorreu um erro ao acessar as categorias de produtos!")
         return redirect(url_for('stock.home'))
     
-    return render_template('stock/categorias.html')
+    return render_template('stock/category/categorias.html', categorias=categorias)
+
+
+@stock_route.route('/nova-categoria', methods=['GET', 'POST'])
+@login_required
+def new_category():
+
+    return
 
 
 @stock_route.route('/exportar')
