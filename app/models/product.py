@@ -1,7 +1,6 @@
-from app import db, bcrypt
+from app import db
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
 from flask_wtf import FlaskForm
-from flask_login import UserMixin
 from wtforms import StringField, IntegerField, DecimalField
 from wtforms.validators import DataRequired
 import datetime
@@ -13,15 +12,17 @@ class Product(db.Model):
     id = Column(Integer, primary_key=True)
     cod = Column(Integer)
     desc = Column(String(256), nullable=False)
+    categoria = Column(Integer, ForeignKey('categorias.id'))
     preco = Column(Float(), nullable=False)
     quant = Column(Integer, default=1, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     altered_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
     active = Column(Boolean, default=True, nullable=False)
 
-    def __init__(self, cod, desc, preco, quant, user_id):
+    def __init__(self, cod, desc, categoria, preco, quant, user_id):
         self.cod = cod
         self.desc = desc 
+        self.categoria = categoria
         self.preco = preco
         self.quant = quant
         self.user_id = user_id
@@ -64,3 +65,21 @@ class ProductForm(FlaskForm):
     desc = StringField("Descrição do produto: ", validators=[DataRequired()])
     preco = DecimalField("Preço Produto: ", validators=[DataRequired()])
     quant = IntegerField("Quantidade: ", validators=[DataRequired()])
+
+
+class ProductCategory(db.Model):
+    __tablename__ = 'categorias'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    altered_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
+    active = Column(Boolean, default=True, nullable=False)
+
+    def __init__(self, name, user_id):
+        self.name = name
+        self.user_id = user_id
+        self.active = True
+
+    def __repr__(self):
+        return f'Categoria: {self.name}; ativa: {self.active}'
