@@ -195,11 +195,18 @@ def categorias():
     return render_template('stock/category/categorias.html', categorias=categorias)
 
 
-@stock_route.route('/categoria', defaults={'id': None})
+@stock_route.route('/categoria/', defaults={'id': None})
 @stock_route.route('/categoria/<id>')
 def get_categoria(id):
-    
-    return
+    if not id:
+        id = request.args.get('id')
+    try:
+        categoria = ProductCategory.query.filter_by(id=id).first()
+        produtos = Product.query.filter_by(categoria=categoria.id).all()
+    except OperationalError:
+        flash('ocorreu um erro ao acessar dados da categoria selecionada!')
+        return redirect(url_for('stock.home'))
+    return render_template('stock/category/get-category.html', categoria=categoria, produtos=produtos)
 
 
 @stock_route.route('/nova-categoria', methods=['GET', 'POST'])
@@ -218,6 +225,10 @@ def new_category():
         db.session.close()
         return redirect(url_for("stock.new_category"))
     return render_template('stock/category/new-category.html')
+
+
+@stock_route.route('/categoria/edit/', defaults={"id": None})
+@stock_route.route('/categoria/edit/<id>')
 
 
 @stock_route.route('/exportar')

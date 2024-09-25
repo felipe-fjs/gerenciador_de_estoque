@@ -1,0 +1,47 @@
+{% extends "stock/base.html" %}
+
+{% block title %}categoria.name {% endblock %}
+
+{% block head %} {% endblock %}
+
+{% block content %}
+    <h1>Read produtos</h1>
+    <form aria-disabled="true">
+        <p>
+            <label for="id">ID:</label>
+            <input type="number" name="id" id="id" value="{{ categoria.id }}" disabled>
+        </p>
+        <a href="{{ url_for('stock.edit_category', id=category.id)}}">Editar categoria</a>
+
+        <!-- <section>
+        {% if product.active %}
+                <button type="button" onclick="check()">Desativar Produto</button>
+                <div id="msg-confirm">
+                    Deseja confirmar a desativação do produto "{{ product.desc[:21]}}..."?
+                    <button type="button" onclick="check()">Cancelar</button>
+                    <a href="{{ url_for('stock.deactivate_product', id=product.id)}}">Confirmar desativação do produto</a>
+                </div>
+            </section>
+        {% else %}
+            <section>
+                <button type="button" onclick="check()">Ativar produto</button>
+                <div id="msg-confirm">
+                    Deseja confirmar a ativação do produto "{{ product.desc[:21] }}..."?
+                    <button type="button" onclick="check()">Cancelar</button>
+                    <a href="{{ url_for('stock.activate_product', id=product.id)}}">Confirmar REativação do produto</a>
+                </div>
+        {% endif %}
+        </section> -->
+        
+    </form>
+    <script>
+        const msg = document.getElementById('msg-confirm')
+        function check(){
+            if (window.getComputedStyle(msg).display == 'none') {
+                msg.style.display = 'block'
+            } else {
+                msg.style.display = 'none'
+            }
+        }
+    </script>
+{% endblock %}
