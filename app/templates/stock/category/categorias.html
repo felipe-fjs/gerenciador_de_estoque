@@ -21,10 +21,9 @@
         <tbody>
             {% for categoria in categorias %}
             <tr onclick="window.location.href = `{{ url_for('stock.get_categoria', id=categoria.id)}}`">
-                <td title="Código do produto">{{categoria.cod}}</td>
-                <td title="Descrição">{{categoria.desc[:48]}}...</td>
-                <td title="Preço">R$ {{categoria.preco}}</td>
-                <td title="Quantidade em estoque">{{categoria.quant}}</td>
+                <td title="Código do produto">{{categoria.id}}</td>
+                <td title="Descrição">{{categoria.name}}...</td>
+                <td title="Preço">R$ {{categoria.active}}</td>
             </tr>
             {% endfor %}
         </tbody>

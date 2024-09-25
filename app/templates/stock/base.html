@@ -22,6 +22,7 @@
             <a href="{{ url_for('stock.home') }}" class="text-reset">INÍCIO</a>
             <a href="{{ url_for('stock.new_product') }}" class="text-reset">NOVO PRODUTO</a>
             <a href="{{ url_for('stock.categorias')}}" class="text-reset">CATEGORIAS DE PRODUTO</a>
+            <a href="{{ url_for('stock.new_category')}}" class="text-reset">NOVA CATEGORIA</a>
             <a href="#" class="text-reset">EXPORTAR ESTOQUE</a>
             <a href="{{ url_for('user.logout') }}" class="text-reset">SAIR <span class="material-symbols-outlined">
                 logout
@@ -43,7 +44,7 @@
             //     navbar.style.display = 'none'
             // }
             if (bab.style.maxHeight == '0px' || bab.style.maxHeight == '' ) {
-                bab.style.maxHeight = "250px"
+                bab.style.maxHeight = "280px"
             } else {
                 bab.style.maxHeight = 0
             }

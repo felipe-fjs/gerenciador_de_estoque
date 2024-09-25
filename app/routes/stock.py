@@ -198,8 +198,19 @@ def categorias():
 @stock_route.route('/nova-categoria', methods=['GET', 'POST'])
 @login_required
 def new_category():
-
-    return
+    if request.method == 'POST':
+        new_cat = ProductCategory(request.form['cat'], current_user.id)
+        try:
+            db.session.add(new_cat)
+            db.session.commit()
+        except OperationalError:
+            flash(f"Ocorreu um erro ao cadastrar a categoria {new_cat.name}")
+            return redirect(url_for('stock.new_category'))
+        
+        flash(f'Categoria {new_cat.name} registrada com sucesso!')
+        db.session.close()
+        return redirect(url_for("stock.new_category"))
+    return render_template('stock/category/new-category.html')
 
 
 @stock_route.route('/exportar')
