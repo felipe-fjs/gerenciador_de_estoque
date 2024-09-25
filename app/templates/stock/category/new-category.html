@@ -7,21 +7,21 @@
 {% block content %}
 <section aria-describedby="form-title" id="back-new-product">
     
-        {% set messages = get_flashed_messages() %}
-        {% if messages %}
-            <section class="alert alert-warning">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </section>
-        {% endif %}
     
-        <section class="section-form">
+    <section class="section-form">
+            {% set messages = get_flashed_messages() %}
+            {% if messages %}
+                <section class="alert alert-warning">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </section>
+            {% endif %}
             <form action="{{ url_for('stock.new_category')}}" method="post">
                 <h1 id="form-title">Nova categoria</h1>
                 <p>
                     <label for="cat">Categoria:</label>
-                    <input type="text" name="cat" id="cat" class="input" required>
+                    <input type="text" name="cat" id="cat" maxlength="64" class="input" required>
                 </p>
                 
                 <button type="submit" class="btn btn-primary">Cadastrar</button>

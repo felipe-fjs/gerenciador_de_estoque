@@ -11,19 +11,18 @@
     <table>
         <thead>
             <tr>
-                <th scope="col" title="Código">Cód.</th>
-                <th scope="col" title="Descrição">Descrição</th>
-                <th scope="col" title="Preço">Preço</th>
-                <th scope="col" title="Quantidade em estoque">Quantidade</th>
+                <th scope="col" title="ID no banco de dados">ID</th>
+                <th scope="col" title="Nome da categoria">Nome</th>
+                <th scope="col" title="se categoria está ativa">Ativa</th>
             </tr>
         </thead>
 
         <tbody>
             {% for categoria in categorias %}
             <tr onclick="window.location.href = `{{ url_for('stock.get_categoria', id=categoria.id)}}`">
-                <td title="Código do produto">{{categoria.id}}</td>
-                <td title="Descrição">{{categoria.name}}...</td>
-                <td title="Preço">R$ {{categoria.active}}</td>
+                <td title="ID da categoria">{{categoria.id}}</td>
+                <td title="Nome da categoria">{{categoria.name}}...</td>
+                <td title="Se a categoria está ativa ou não">{% if categoria.active %} Ativa {% else %} Desativada {% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

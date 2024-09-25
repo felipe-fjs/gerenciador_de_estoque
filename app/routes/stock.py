@@ -195,6 +195,13 @@ def categorias():
     return render_template('stock/category/categorias.html', categorias=categorias)
 
 
+@stock_route.route('/categoria', defaults={'id': None})
+@stock_route.route('/categoria/<id>')
+def get_categoria(id):
+    
+    return
+
+
 @stock_route.route('/nova-categoria', methods=['GET', 'POST'])
 @login_required
 def new_category():
