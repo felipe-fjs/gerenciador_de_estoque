@@ -227,8 +227,63 @@ def new_category():
     return render_template('stock/category/new-category.html')
 
 
-@stock_route.route('/categoria/edit/', defaults={"id": None})
-@stock_route.route('/categoria/edit/<id>')
+@stock_route.route('/categoria/edit/', defaults={"id": None}, methods=['GET', 'POST'])
+@stock_route.route('/categoria/edit/<id>', methods=['GET', 'POST'])
+def edit_category(id):
+    if not id:
+        id = request.args.get('id')
+    
+    if request.method == 'POST':
+        edit_cat = {'id': id, 'name': request.form.get('cat')}
+        try:
+            categoria = ProductCategory.query.filter_by(id=id).first()
+            categoria.name = edit_cat['name']
+            db.session.commit()
+        except OperationalError:
+            flash("Ocorreu um erro ao atualizar a categoria")
+        return redirect(url_for('stock.get_category', id=edit_cat['id']))
+
+    try:
+        categoria = ProductCategory.query.filter_by(id=id).first()
+    except OperationalError:
+        flash('Ocorreu um erro ao recuperar os dados da categoria selecionada!')
+        return redirect(url_for('stock.categorias'))
+    
+    return render_template('stock/category/get-category.html')
+
+
+@stock_route.route('/desativar/', defaults={'id':None}, methods=['PUT'])
+@stock_route.route('/desativar/<id>', methods=['PUT'])
+def deactivate_cat(id):
+    if not id:
+        id = request.args.get('id')
+    
+    try:
+        categoria = ProductCategory.query.filter_by(id=id).first()
+        categoria.active = False
+        db.session.close()
+    except OperationalError:
+        flash('Ocorreu um erro ao desativar a categoria!')
+        return redirect(url_for('stock.get_category', id=id))
+
+    return redirect(url_for('stock.get_category', id=id))
+
+
+@stock_route.route('/ativar/', defaults={'id': None}, methods=['PUT'])
+@stock_route.route('/ativar/<id>', methods=['PUT'])
+def activate_cat(id):
+    if not id:
+        id = request.args.get('id')
+
+    try:
+        categoria = ProductCategory.query.filter_by(id=id).first()
+        categoria.active = True
+        db.session.close()
+    except OperationalError:
+        flash('Ocorreu um erro ao desativar a categoria!')
+        return redirect(url_for('stock.get_category', id=id))
+    
+    return redirect(url_for('stock.get_category', id=id))
 
 
 @stock_route.route('/exportar')
