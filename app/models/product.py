@@ -45,6 +45,12 @@ class Product(db.Model):
         for n in total_spt[::-1]:
             total += f'{n}'
         return total+','+decimal
+    
+    def get_nome_categoria(self):
+        if not self.categoria:
+            return "Sem categoria"
+        cat = ProductCategory.query.filter_by(id=self.categoria).first()
+        return cat.name
 
     @classmethod
     def price_number_to_str(clas, value):
