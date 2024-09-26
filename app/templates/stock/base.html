@@ -12,7 +12,7 @@
 <body>
     <header>
         <span>
-            <h1>ESTOQUE</h1>
+            <h1><a class="text-reset text-decoration-none" href="{{ url_for('stock.home')}}">ESTOQUE</a></h1>
             <span class="material-symbols-outlined" id="menu-burguer">
                 menu
             </span>
@@ -38,11 +38,6 @@
         const menu_burguer = document.getElementById('menu-burguer')
         menu_burguer.addEventListener('click', function (event) {
             let bab = document.getElementById('navbar')
-            // if (window.getComputedStyle(navbar).display == 'none') {
-            //     navbar.style.display = 'flex'
-            // } else {
-            //     navbar.style.display = 'none'
-            // }
             if (bab.style.maxHeight == '0px' || bab.style.maxHeight == '' ) {
                 bab.style.maxHeight = "280px"
             } else {

@@ -12,36 +12,41 @@
 {% endblock %}
 
 {% block content %}
-<h1>Update produtos</h1>
-    {% set messages = get_flashed_messages() %}
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    <form id="form_update">
-        {{ product }}
-        <p>
-            <input type="hidden" id="id" value="{{ product.id }}">
-            <label for="cod">Código do produto:</label>
-            <input type="number" name="cod" id="cod" value="{{ product.cod }}">
-        </p>
-        <p>
-            <label for="desc">Descrição:</label>
-            <textarea name="desc" id="desc" cols="30">{{ product.desc }}</textarea>
-        </p>
-        <p>
-            <label for="preco">Preço:</label>
-            <input type="number" name="preco" id="preco" value="{{ product.preco }}">
-        </p>
-        <p>
-            <label for="quant">Quantidade:</label>
-            <input type="number" name="quant" id="quant" step="0.01" value="{{ product.quant }}">
-        </p>
-        <button type="submit">Atualizar</button>
-    </form>
+<section class="section-background">
+    <section class="form-background">
+        <h1>Update produtos</h1>
+        {% set messages = get_flashed_messages() %}
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form id="form_update">
+            <p>
+                <input type="hidden" id="id" value="{{ product.id }}">
+                <label for="cod">Código do produto:</label>
+                <input type="number" class="form-control" name="cod" id="cod" value="{{ product.cod }}">
+            </p>
+            <p>
+                <label for="desc">Descrição:</label>
+                <textarea name="desc" class="form-control" id="desc" cols="30">{{ product.desc }}</textarea>
+            </p>
+            <p>
+                <label for="preco">Preço:</label>
+                <input type="number" class="form-control" name="preco" id="preco" value="{{ product.preco }}">
+            </p>
+            <p>
+                <label for="quant">Quantidade:</label>
+                <input type="number" class="form-control" name="quant" id="quant" step="0.01" value="{{ product.quant }}">
+            </p>
+            <button type="submit" class="btn btn-primary">Atualizar</button>
+            <a class="text-reset text-decoration-none btn btn-secondary" href="{{ url_for('stock.get_product', id=product.id)}}">Cancelar</a>
+        </form>
+    </section>
+</section>
+
     <script>
         // Para mandar put ao back-end
         document.getElementById('form_update').addEventListener('submit',  function (event) {

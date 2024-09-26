@@ -249,7 +249,7 @@ def edit_category(id):
         flash('Ocorreu um erro ao recuperar os dados da categoria selecionada!')
         return redirect(url_for('stock.categorias'))
     
-    return render_template('stock/category/get-category.html')
+    return render_template('stock/category/edit-category.html', categoria=categoria)
 
 
 @stock_route.route('/desativar/', defaults={'id':None}, methods=['PUT'])

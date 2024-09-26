@@ -5,35 +5,38 @@
 {% block head %} {% endblock %}
 
 {% block content %}
-    <h1>Read produtos</h1>
-    <form aria-disabled="true">
-        <p>
-            <label for="id">ID:</label>
-            <input type="number" name="id" id="id" value="{{ categoria.id }}" disabled>
-        </p>
-        <a href="{{ url_for('stock.edit_category', id=category.id)}}">Editar categoria</a>
-
-        <!-- <section>
-        {% if product.active %}
-                <button type="button" onclick="check()">Desativar Produto</button>
-                <div id="msg-confirm">
-                    Deseja confirmar a desativação do produto "{{ product.desc[:21]}}..."?
-                    <button type="button" onclick="check()">Cancelar</button>
-                    <a href="{{ url_for('stock.deactivate_product', id=product.id)}}">Confirmar desativação do produto</a>
-                </div>
-            </section>
-        {% else %}
+<section aria-labelledby="" class="section-background">
+    <section class="section-form">
+        <form aria-disabled="true">
+            <h1 id="form-title">Categoria</h1>
+            <p>
+                <label for="name">name:</label>
+                <input type="text" class="form-control" id="name" value="{{ categoria.name }}" disabled>
+            </p>
+            
             <section>
-                <button type="button" onclick="check()">Ativar produto</button>
-                <div id="msg-confirm">
-                    Deseja confirmar a ativação do produto "{{ product.desc[:21] }}..."?
-                    <button type="button" onclick="check()">Cancelar</button>
-                    <a href="{{ url_for('stock.activate_product', id=product.id)}}">Confirmar REativação do produto</a>
-                </div>
-        {% endif %}
-        </section> -->
-        
-    </form>
+                <a class="text-reset text-decoration-none btn btn-primary" href="{{ url_for('stock.edit_category', id=categoria.id)}}">Editar categoria</a>
+            {% if categoria.active %}
+                    <button class="btn btn-danger" type="button" onclick="check()">Desativar Categoria</button>
+                    <div id="msg-confirm">
+                        Deseja confirmar a desativação do produto "{{ categoria.name }}"?
+                        <button class="btn btn-secondary" type="button" onclick="check()">Cancelar</button>
+                        <a class="text-reset text-decoration-none btn btn-danger" href="{{ url_for('stock.deactivate_cat', id=categoria.id)}}">Confirmar</a>
+                    </div>
+                </section>
+            {% else %}
+                <section>
+                    <button type="button" onclick="check()">Ativar produto</button>
+                    <div id="msg-confirm">
+                        Deseja confirmar a ativação do produto "{{ categoria.name }}..."?
+                        <button type="button" onclick="check()">Cancelar</button>
+                        <a href="{{ url_for('stock.activate_cat', id=categoria.id)}}">Confirmar REativação do produto</a>
+                    </div>
+            {% endif %}
+            </section>
+    </section>
+</section>
+
     <script>
         const msg = document.getElementById('msg-confirm')
         function check(){

@@ -1,0 +1,56 @@
+{% extends "stock/base.html" %}
+
+{% block title %}categoria.name {% endblock %}
+
+{% block head %} {% endblock %}
+
+{% block content %}
+<section aria-describedby="form-title" class="section-background">
+    <section class="form-background">
+        <h1 id="form-title">Editar categoria</h1>
+        <form id="form_update">
+            <p>
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" value="{{ categoria.name }}">
+            </p>
+            <button type="submit" class="btn btn-primary">Editar</button>
+    
+            
+            
+        </form>
+    </section>
+</section>
+    
+    
+    <script>
+        document.getElementById('form_update').addEventListener('submit',  function (event) {
+            event.preventDefault()
+
+            let categoria = {
+                id : "{{ categoria.id }}",
+                name: document.getElementById('name').value
+            }
+
+            let url = "{{ url_for('stock.edit_category', id=categoria.id)}}"
+
+            fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(categoria),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data['ok']) {
+                    window.location.href  = data['url']
+                } else {
+                    window.location.reload()
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+
+        })
+    </script>
+{% endblock %}
