@@ -1,11 +1,10 @@
 from app import db, bcrypt
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, DateTime
 from flask_wtf import FlaskForm
 from flask_login import UserMixin
-from wtforms import StringField, EmailField, PasswordField, IntegerField, DecimalField
+from wtforms import StringField, EmailField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo
 from datetime import datetime
-import dataclasses
 
 
 class User(db.Model, UserMixin):
@@ -34,6 +33,7 @@ class LoginForm(FlaskForm):
     name = StringField("Nome: ", validators=[DataRequired(), Length(min=3)])
     email = EmailField("Email: ", validators=[DataRequired()])
     pwd = PasswordField("Senha:", validators=[DataRequired()])
+    remember = BooleanField("remember-me", default=False)
 
 
 class SignupForm(FlaskForm):

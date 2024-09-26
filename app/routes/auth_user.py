@@ -1,5 +1,5 @@
 from app import login_manager, bcrypt, db, app
-from app.models.user import User, SignupForm
+from app.models.user import User, SignupForm, LoginForm
 from app.decoratos.user_auth import reset_token_required
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from smtplib import SMTPException
@@ -123,19 +123,22 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('stock.home'))
     
+    form = LoginForm()
+    
     if request.method == 'POST':
-        if not User.query.filter_by(email=request.form['email']).first():
+        if not User.query.filter_by(email=form.email.data).first():
             flash(f'Email não cadastrado!')
             return redirect(url_for('user.login'))
 
-        user = User.query.filter_by(email=request.form['email']).first()
-        if user.verify_pwd(request.form['pwd']):
-            login_user(user, remember=True)
+        user = User.query.filter_by(email=form.email.data).first()
+        if user.verify_pwd(form.pwd.data):
+            print(form.remember.data)
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('stock.home'))
         
         flash('Senha incorreta!')
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', form=form)
 
 
 @user_route.route('/logout')

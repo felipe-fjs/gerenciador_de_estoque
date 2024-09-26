@@ -7,6 +7,10 @@
         .text-end {
             float: right;
         }
+        #remember {
+            width: 15px;
+            height: 15px;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -23,17 +27,23 @@
                 </div>
             {% endif %}
             <form action="{{ url_for('user.login') }}" method="post">
+                {{ form.csrf_token }}
                 <p>
                     <label for="email">Email</label><br>
-                    <input type="email" name="email" id="email">
+                    {{ form.email }}
                 </p>
                 <p>
                     <label for="pwd">Senha</label><br>
-                    <input type="password" name="pwd" id="pwd">
+                    {{ form.pwd }}
                     <a href="{{ url_for('user.reset_pwd') }}" class="text-end text-reset">Esqueceu a senha?</a>
                 </p>
                 <p>
-                    <button type="submit" class="btn btn-secondary">Login</button><br>
+                    <button type="submit" class="btn btn-secondary">Login</button>
+                    
+                        {{ form.remember(class="form-check-input") }}
+                        {{ form.remember.label(class="form-check-label") }}
+                   
+                    <br>
                     <a href="{{ url_for('user.signup') }}">Cadastrar-se</a>
                 </p>
             </form>

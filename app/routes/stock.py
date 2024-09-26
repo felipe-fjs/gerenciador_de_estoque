@@ -201,7 +201,7 @@ def activate_product(id):
 def categorias():
     try:
         categorias = ProductCategory.query.filter_by(user_id=current_user.id).all()
-    except:
+    except OperationalError:
         flash("Ocorreu um erro ao acessar as categorias de produtos!")
         return redirect(url_for('stock.home'))
     
