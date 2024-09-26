@@ -5,12 +5,13 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mailman import Mail
 from CONFIG import SECRET_KEY, SQLALCHEMY_URI, EMAIL_USERNAME, EMAIL_PWD
+from datetime import timedelta
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+ SQLALCHEMY_URI
-
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 email_config = {
     'MAIL_SERVER': 'smtp.gmail.com',
