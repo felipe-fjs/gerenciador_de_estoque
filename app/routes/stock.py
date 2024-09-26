@@ -60,7 +60,7 @@ def new_product():
     if request.method == 'POST':
         if not Product.query.filter_by(cod=form.cod.data).first():
             # caso o produto não esteja cadastrado
-            product = Product(form.cod.data, form.desc.data, form.preco.data, form.quant.data, current_user.id)
+            product = Product(form.cod.data, form.desc.data, request.form.get('categoria'),form.preco.data, form.quant.data, current_user.id)
 
             try:
                 db.session.add(product)
@@ -74,9 +74,14 @@ def new_product():
     
             return redirect(url_for('stock.new_product'))
         
-        # parte destinada caso o produto já esteja cadastrado
-        
-    return render_template('stock/product/new_product.html', form=form)
+    # carregar categorias registradas
+    try:
+        categorys = ProductCategory.query.filter_by(user_id=current_user.id).all()
+    except OperationalError:
+        flash('Ocorreu um erro ao carregas as categorias registradas para o formulário de produtos!')
+        return redirect(url_for('stock.home'))
+
+    return render_template('stock/product/new_product.html', form=form, categorias=categorys)
 
 
 @stock_route.route('/produto/', defaults={'id': None}, methods=['GET'])
@@ -92,11 +97,12 @@ def get_product(id):
     
     try:
         product = Product.query.filter_by(id=id).first()
+        categorys = ProductCategory.query.filter_by(user_id=current_user.id).all()
     except OperationalError:
         flash(f'ocorreu um erro ao carregar o produto de id {id}')
     finally:
         db.session.close()
-    return render_template('stock/product/get_product.html', product=product)
+    return render_template('stock/product/get_product.html', product=product, categorias= categorys)
 
 
 @stock_route.route('/produto/edit/', defaults={'id':None}, methods=['GET', 'PUT'])
@@ -111,7 +117,8 @@ def edit_product(id):
             update_product= request.json
             product = Product.query.filter_by(id=id).first()
             product.cod = update_product['cod']
-            product.desc = update_product['desct']
+            product.desc = update_product['desc']
+            product.categoria = update_product['categoria']
             product.preco = update_product['preco']
             product.quant = update_product['quant']
             db.session.commit()
@@ -124,9 +131,15 @@ def edit_product(id):
         finally:
             db.session.close()
             return jsonify(ok=True, url=url_for('stock.get_product', id=id))
-
-    product = Product.query.filter_by(id=id).first()
-    return render_template('stock/product/edit_product.html', product=product)
+        
+    try:
+        product = Product.query.filter_by(id=id).first()
+        categorias = ProductCategory.query.filter_by(user_id=current_user.id).all()
+    except OperationalError:
+        flash("Ocorreu um erro ao carregar as informações do produto!")
+        return redirect(url_for('stock.home'))
+    
+    return render_template('stock/product/edit_product.html', product=product, categorias=categorias)
 
 
 @stock_route.route('produto/desativar/', defaults={'id':None}, methods=['PUT'])
