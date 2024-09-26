@@ -34,6 +34,19 @@
                 <textarea name="desc" class="form-control" id="desc" cols="30">{{ product.desc }}</textarea>
             </p>
             <p>
+                <label for="categoria">Categoria</label>
+                <select class="form-control" name="categoria" id="categoria">
+                    <option value="{{ product.categoria }}">{{ product.get_nome_categoria() }}</option>
+                    {% if categorias %}
+                        {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}">{{ categoria.name }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="None">Nenhuma categoria encontrada! Registre uma em "nova categoria"!</option>
+                    {% endif %}
+                </select>
+            </p>
+            <p>
                 <label for="preco">Preço:</label>
                 <input type="number" class="form-control" name="preco" id="preco" value="{{ product.preco }}">
             </p>
@@ -56,6 +69,7 @@
                 id : document.getElementById('id').value,
                 cod : cod.value,
                 desc: desc.value,
+                categoria: categoria.value,
                 preco: preco.value,
                 quant: quant.value
             }

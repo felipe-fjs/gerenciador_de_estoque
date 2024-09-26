@@ -38,6 +38,7 @@
                 <tr>
                     <th scope="col" title="Código">Cód.</th>
                     <th scope="col" title="Descrição">Descrição</th>
+                    <th scope="col" title="Categoria do produto">Categoria</th>
                     <th scope="col" title="Preço">Preço</th>
                     <th scope="col" title="Quantidade em estoque">Quantidade</th>
                 </tr>
@@ -48,6 +49,7 @@
                 <tr onclick="window.location.href = `{{ url_for('stock.get_product', id=product.id)}}`">
                     <td title="Código do produto">{{product.cod}}</td>
                     <td title="Descrição">{{product.desc[:48]}}...</td>
+                    <td title="Categoria do produto">{{product.get_nome_categoria()}}</td>
                     <td title="Preço">R$ {{product.preco}}</td>
                     <td title="Quantidade em estoque">{{product.quant}}</td>
                 </tr>

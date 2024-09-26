@@ -19,6 +19,12 @@
                 <textarea class="form-control" name="desc" id="desc" cols="30" disabled>{{ product.desc }}</textarea>
             </p>
             <p>
+                <label for="categoria">Categoria</label>
+                <select class="form-control" name="categoria" id="categoria" disabled>
+                    <option value="{{ product.categoria }}">{{ product.get_nome_categoria() }}</option>
+                </select>
+            </p>
+            <p>
                 <label for="preco">Preço:</label>
                 <input class="form-control" type="number" name="preco" id="preco" value="{{ product.preco }}" disabled>
             </p>

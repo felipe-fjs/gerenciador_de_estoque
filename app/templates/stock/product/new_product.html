@@ -29,6 +29,14 @@
                     {{ form.desc(class='input', title='Pode ser colocado o nome do produto e suas especificações') }}
                 </p>
                 <p>
+                    <label for="categoria">Categoria</label>
+                    <select class="form-control" name="categoria" id="categoria" required>
+                        {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}">{{ categoria.name }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p>
                     <label for="preco">Preço unidade:</label>
                     {{ form.preco(step='0.01', class='input', title='Preço do produto por unidade') }}
                 </p>

@@ -25,7 +25,7 @@
                     </div>
                 </section>
             {% else %}
-                <section>
+                <section aria-describedby="msg-confirm">
                     <button type="button" onclick="check()">Ativar produto</button>
                     <div id="msg-confirm">
                         Deseja confirmar a ativação do produto "{{ categoria.name }}..."?
@@ -33,9 +33,42 @@
                         <a href="{{ url_for('stock.activate_cat', id=categoria.id)}}">Confirmar REativação do produto</a>
                     </div>
             {% endif %}
+            <section aria-describedby="produtos">
+                <h2 id="produtos">Produtos dessa categoria</h2>
+                {% if produtos|length > 1 %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cód</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Quantidade</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for produto in produtos %}
+                                <tr>
+                                    <td>{{ produto.cod }}</td>
+                                    <td>{{ produto.desc }}</td>
+                                    <td>{{ produto.get_nome_categoria() }}</td>
+                                    <td>R$ {{ produto.valor }}</td>
+                                    <td>{{ produto.quant }}</td>
+                                    <td>R$ {{ produto.get_total_str() }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <p class="fs-4">Não há produtos registrados nessa categoria</p>
+                    </div>
+                {% endif %}
+                
+            </section>
+        </section>
             </section>
     </section>
-</section>
 
     <script>
         const msg = document.getElementById('msg-confirm')
